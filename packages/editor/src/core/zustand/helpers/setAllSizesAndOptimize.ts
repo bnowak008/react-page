@@ -18,4 +18,4 @@ export const setAllSizesAndOptimize = (rows: Array<Row> = []): Array<Row> =>
       );
     }
     return optimized;
-  }); 
+  });

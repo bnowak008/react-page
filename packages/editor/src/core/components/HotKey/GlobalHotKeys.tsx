@@ -42,22 +42,24 @@ const GlobalHotKeys: React.FC<{ focusRef: RefObject<HTMLDivElement> }> = ({
 }) => {
   const editor = useEditorStore();
 
-  const undo = useUndo();
-  const redo = useRedo();
-  const setInsertMode = useSetInsertMode();
   const isEditMode = useIsEditMode();
-  const blurAllCells = useBlurAllCells();
-
   const focusedNodeIds = useAllFocusedNodeIds();
   const someCellIsFocused = focusedNodeIds.length > 0;
   const focusedNodeId = useFocusedNodeId();
   const focusParentId = useParentCellId(focusedNodeId);
   const plugins = useAllCellPluginsForNode(focusParentId);
+  
+  const isInsertMode = useIsInsertMode();
+  
+  const undo = useUndo();
+  const redo = useRedo();
+  const setInsertMode = useSetInsertMode();
+  const blurAllCells = useBlurAllCells();
   const focusCell = useFocusCellById();
   const removeCells = useRemoveMultipleNodeIds();
   const insertAfter = useInsertAfter();
-  const isInsertMode = useIsInsertMode();
   const setEditMode = useSetEditMode();
+
   const delegateToFoundPlugin = useCallback(
     async (
       event: Event,
@@ -82,7 +84,7 @@ const GlobalHotKeys: React.FC<{ focusRef: RefObject<HTMLDivElement> }> = ({
         }
       }
     },
-    [editor, isEditMode]
+    [editor, isEditMode, plugins]
   );
 
   const handlers = useMemo<HotkeyHandlers>(() => {
@@ -170,7 +172,11 @@ const GlobalHotKeys: React.FC<{ focusRef: RefObject<HTMLDivElement> }> = ({
                       commonAncestorNode.rows.length - 1
                     ].id // if common ancestor is a cell (usually the root cell, add below last row)
                 : null;
-              insertAfter(node, insertAfterNodeId);
+              
+              // Pass the node and insertAfterNodeId to insertAfter
+              if (commonAncestorNode) {
+                insertAfter(node, insertAfterNodeId);
+              }
             }
           } catch (e) {
             // ignore
@@ -204,11 +210,16 @@ const GlobalHotKeys: React.FC<{ focusRef: RefObject<HTMLDivElement> }> = ({
     focusedNodeId,
     focusedNodeIds,
     someCellIsFocused,
+    isInsertMode,
     blurAllCells,
     focusCell,
     removeCells,
     setEditMode,
     setInsertMode,
+    undo,
+    redo,
+    insertAfter,
+    delegateToFoundPlugin
   ]);
 
   useEffect(() => {

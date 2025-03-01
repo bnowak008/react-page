@@ -20,7 +20,7 @@ const loadable = <T extends ComponentType<any>>(
 ) => {
   // Use React.lazy for component loading
   const Component = lazy(factory);
-  
+
   // Preload function to allow manual preloading
   const preload = () => {
     return factory();
@@ -40,7 +40,7 @@ const loadable = <T extends ComponentType<any>>(
       ref
     ) => {
       const isServer = useIsServer();
-      
+
       // Return fallback on server-side rendering
       if (isServer) {
         return fallback ?? null;
@@ -62,7 +62,7 @@ const loadable = <T extends ComponentType<any>>(
     load: () => Promise<unknown>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } = LoadableComponent as any;
-  
+
   LoadableComponentWithPreload.load = preload;
 
   return LoadableComponentWithPreload;

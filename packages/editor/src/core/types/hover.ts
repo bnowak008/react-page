@@ -35,3 +35,14 @@ export type HoverInsertActions = {
 };
 
 export type Matrix = Array<Array<number>>;
+
+/**
+ * Position enum for hover positions
+ */
+export type PositionEnum =
+  'above'
+  | 'below'
+  | 'left-of'
+  | 'right-of'
+  | 'inline-left'
+  | 'inline-right';

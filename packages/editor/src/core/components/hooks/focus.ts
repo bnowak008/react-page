@@ -1,22 +1,22 @@
 import type { EffectCallback, DependencyList } from 'react';
 import { useEffect } from 'react';
-import { useSelector } from '../../zustand/hooks';
-
 import {
-  allFocusedNodeIds,
-  focus,
-  singleFocusedNode,
-} from '../../selector/focus';
+  useAllFocusedNodeIds as useZustandAllFocusedNodeIds,
+  useFocusedNodeId as useZustandFocusedNodeId,
+  useIsFocused as useZustandIsFocused,
+  useIsExclusivelyFocused as useZustandIsExclusivelyFocused,
+  useFocusState,
+} from '../../zustand/hooks';
 
 /**
  * @returns the current focused nodeId if just one or null
  */
 export const useFocusedNodeId = () => {
-  return useSelector(singleFocusedNode);
+  return useZustandFocusedNodeId();
 };
 
 export const useAllFocusedNodeIds = () => {
-  return useSelector(allFocusedNodeIds);
+  return useZustandAllFocusedNodeIds();
 };
 
 /**
@@ -25,7 +25,7 @@ export const useAllFocusedNodeIds = () => {
  * @returns true if the given node id is focused
  */
 export const useIsFocused = (id: string) => {
-  return useSelector((state) => allFocusedNodeIds(state).includes(id));
+  return useZustandIsFocused(id);
 };
 
 /**
@@ -34,7 +34,7 @@ export const useIsFocused = (id: string) => {
  * @returns true if ONLY the given node id is focused
  */
 export const useIsExclusivlyFocused = (id: string) => {
-  return useSelector((state) => singleFocusedNode(state) === id);
+  return useZustandIsExclusivelyFocused(id);
 };
 
 /**
@@ -48,15 +48,11 @@ export const useScrollToViewEffect = (
   effect: EffectCallback,
   deps: DependencyList
 ) => {
-  const scrollToCell = useSelector((state) => {
-    const f = focus(state);
-    const nodeId = singleFocusedNode(state);
+  const focusState = useFocusState();
+  const focusedNodeId = useZustandFocusedNodeId();
 
-    if (!f || nodeId !== id) {
-      return null;
-    }
-    return f.scrollToCell;
-  });
+  const scrollToCell = focusState?.scrollToCell && focusedNodeId === id;
+
   useEffect(() => {
     if (scrollToCell) {
       return effect();

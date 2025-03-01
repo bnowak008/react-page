@@ -53,4 +53,4 @@ export const optimizeRow = ({ cells, ...other }: Row): Row =>
         return [c];
       })
       .reduce(flatten, []),
-  }); 
+  });

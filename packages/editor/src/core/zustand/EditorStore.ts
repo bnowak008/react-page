@@ -2,10 +2,40 @@ import { createContext } from 'react';
 import type { StoreApi } from 'zustand';
 import { createId } from '../utils/createId';
 import { CURRENT_EDITABLE_VERSION } from '../migrations/EDITABLE_MIGRATIONS';
-import type { Value } from '../types/node';
+import type { Value, Node, NodeWithAncestors } from '../types/node';
+import { isRow } from '../types/node';
 import type { RootState, ZustandStore } from './store';
 import createZustandStore, { createInitialState } from './store';
-import { findNodeInState } from '../selector/editable';
+import type { DisplayModes } from '../types';
+
+// Helper function to find a node by ID in a tree of nodes
+const findNode = (
+  nodes: Node[],
+  nodeId: string,
+  ancestors: Node[] = []
+): NodeWithAncestors | null => {
+  for (const node of nodes) {
+    if (node.id === nodeId) {
+      return {
+        node,
+        ancestors,
+      };
+    }
+    // else search children
+    if (isRow(node) && node.cells) {
+      const found = findNode(node.cells, nodeId, [node, ...ancestors]);
+      if (found) {
+        return found;
+      }
+    } else if (!isRow(node) && node.rows) {
+      const found = findNode(node.rows, nodeId, [node, ...ancestors]);
+      if (found) {
+        return found;
+      }
+    }
+  }
+  return null;
+};
 
 export const EditorContext = createContext<EditorStore | null>(null);
 
@@ -33,9 +63,39 @@ class EditorStore {
   }
 
   public getNodeWithAncestors = (nodeId: string) => {
-    // Use the selector to find the node in the state
+    // Get the current state
     const state = this.store.getState();
-    return findNodeInState(state, nodeId);
+
+    // Use node cache for performance
+    if (!state.reactPage.__nodeCache) {
+      state.reactPage.__nodeCache = {};
+    }
+
+    // Return from cache if available
+    if (state.reactPage.__nodeCache[nodeId]) {
+      return state.reactPage.__nodeCache[nodeId];
+    }
+
+    // Return null if no value is present
+    if (!state.reactPage.values?.present) {
+      return null;
+    }
+
+    // Find the node in the tree
+    const result = findNode(
+      [
+        {
+          ...state.reactPage.values?.present,
+          isRoot: true,
+        },
+      ],
+      nodeId
+    );
+
+    // Cache the result
+    state.reactPage.__nodeCache[nodeId] = result;
+
+    return result;
   };
 
   public getNode = (nodeId: string) => {
@@ -55,12 +115,18 @@ class EditorStore {
     this.store.getState().redo();
   };
 
-  public setDisplayMode = (mode: 'edit' | 'preview' | 'layout') => {
+  public setDisplayMode = (mode: DisplayModes) => {
     this.store.getState().setDisplayMode(mode);
   };
 
   public setDisplayZoom = (zoom: number) => {
     this.store.getState().setDisplayZoom(zoom);
+  };
+
+  public setDisplayReferenceNodeId = (
+    referenceNodeId: string | null | undefined
+  ) => {
+    this.store.getState().setDisplayReferenceNodeId(referenceNodeId);
   };
 
   public setFocus = (focus: any) => {
@@ -85,4 +151,4 @@ class EditorStore {
 export const createEmptyState: () => Value = () =>
   ({ id: createId(), rows: [], version: CURRENT_EDITABLE_VERSION } as Value);
 
-export default EditorStore; 
+export default EditorStore;

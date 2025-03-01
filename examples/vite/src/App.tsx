@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 // Import directly from the lib directory
-import type { Value } from '../../../packages/editor/lib';
-import EditorComponent from '../../../packages/editor/lib';
-import { cellPlugins } from './plugins'
-import { demo } from './demo'
+import type { Value } from '@react-page/editor';
+import EditorComponent from '@react-page/editor';
+import { cellPlugins } from './plugins';
+import { demo } from './demo';
 
 // Cast the Editor component to any to bypass the type error
 const Editor = EditorComponent as any;
@@ -33,7 +33,7 @@ function App() {
         languages={LANGUAGES}
       />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

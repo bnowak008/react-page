@@ -10,7 +10,7 @@ import {
   useUiTranslator,
 } from '../../../core/components/hooks';
 import type { CellPlugin, InsertNewCell } from '../../../core/types';
-import Draggable from '../Draggable/index';
+import Draggable from '../Draggable';
 
 type ItemProps = {
   plugin: CellPlugin;

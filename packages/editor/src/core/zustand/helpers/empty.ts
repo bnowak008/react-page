@@ -18,4 +18,4 @@ export const isEmpty = (item: Cell | Row): boolean => {
   }
 
   return true;
-}; 
+};

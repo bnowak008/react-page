@@ -3,8 +3,7 @@ import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HoverTarget } from '../../service/hover/computeHover';
 import type { PositionEnum } from '../../const';
-import { useSelector } from '../../zustand/hooks';
-import { findNodeInState } from '../../selector/editable';
+import { useSelector, useNodeWithAncestors } from '../../zustand/hooks';
 import type { Cell, CellDrag, Node, Row } from '../../types/node';
 import { isRow } from '../../types/node';
 import deepEquals from '../../utils/deepEquals';
@@ -35,13 +34,14 @@ export const useNodeProps = <T>(
   nodeId: string | null,
   selector: NodeSelector<T>
 ): T => {
-  const result = useSelector((state) => {
-    const nodeResult = nodeId ? findNodeInState(state, nodeId) : null;
-    if (!nodeResult) {
+  const nodeWithAncestors = nodeId ? useNodeWithAncestors(nodeId) : null;
+
+  const result = useMemo(() => {
+    if (!nodeWithAncestors) {
       return selector(null, []);
     }
-    return selector(nodeResult.node, nodeResult.ancestors);
-  });
+    return selector(nodeWithAncestors.node, nodeWithAncestors.ancestors);
+  }, [nodeWithAncestors, selector]);
 
   const prevResultRef = useRef(result);
   const finalResult = useMemo(() => {
@@ -228,9 +228,7 @@ export const useNodeChildrenIds = (nodeId: string) => {
  */
 export const useNodeHasChildren = (nodeId: string) => {
   return useNodeProps(nodeId, (node) =>
-    isRow(node)
-      ? node.cells?.length > 0
-      : (node?.rows?.length ?? 0) > 0
+    isRow(node) ? node.cells?.length > 0 : (node?.rows?.length ?? 0) > 0
   );
 };
 /**
@@ -424,4 +422,3 @@ export const useDebouncedCellData = (nodeId: string) => {
 
   return [currentData, onChange] as const;
 };
-

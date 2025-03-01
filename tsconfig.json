@@ -13,25 +13,21 @@
       "@react-page/plugins-html5-video/*": ["../../packages/plugins/content/html5-video/src/*"],
       "@react-page/plugins-image": ["../../packages/plugins/content/image/src/index.ts"],
       "@react-page/plugins-image/*": ["../../packages/plugins/content/image/src/*"],
-      "@react-page/plugins-slate": ["../../packages/plugins/content/slate/src/index.ts"],
-      "@react-page/plugins-slate/*": ["../../packages/plugins/content/slate/src/*"],
       "@react-page/plugins-spacer": ["../../packages/plugins/content/spacer/src/index.ts"],
       "@react-page/plugins-spacer/*": ["../../packages/plugins/content/spacer/src/*"],
       "@react-page/plugins-video": ["../../packages/plugins/content/video/src/index.ts"],
-      "@react-page/plugins-video/*": ["../../packages/plugins/content/video/src/*"]
+      "@react-page/plugins-video/*": ["../../packages/plugins/content/video/src/*"],
+      "@react-page/plugins-slate": ["../../packages/plugins/content/slate/src/index.ts"],
+      "@react-page/plugins-slate/*": ["../../packages/plugins/content/slate/src/*"]
     }
   },
-  "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" },
-    { "path": "../../packages/editor" },
-    { "path": "../../packages/plugins/content/divider" },
-    { "path": "../../packages/plugins/content/html5-video" },
-    { "path": "../../packages/plugins/content/image" },
-    { "path": "../../packages/plugins/content/slate" },
-    { "path": "../../packages/plugins/content/spacer" },
-    { "path": "../../packages/plugins/content/video" },
-    { "path": "../../packages/plugins/layout/background" }
+    { "path": "./packages/editor" },
+    { "path": "./packages/plugins/content/divider" },
+    { "path": "./packages/plugins/content/html5-video" },
+    { "path": "./packages/plugins/content/image" },
+    { "path": "./packages/plugins/content/spacer" },
+    { "path": "./packages/plugins/content/video" },
+    { "path": "./packages/plugins/layout/background" }
   ]
 }

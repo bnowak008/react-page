@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import {
-  DndContext,
+import React, { useState, useCallback, useMemo } from 'react';
+import type {
   DragStartEvent,
   DragEndEvent,
   DragCancelEvent,
   DragMoveEvent,
   DragOverEvent,
-  UniqueIdentifier,
+} from '@dnd-kit/core';
+import {
+  DndContext,
   PointerSensor,
   useSensor,
   useSensors,
@@ -18,17 +19,10 @@ const DndKitProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const dndBackend = useOption('dndBackend');
   const [activeId, setActiveId] = useState<string | null>(null);
   
-  // Debug logging
-  useEffect(() => {
-    console.log('[DndKitProvider] Initialized');
-    console.log('[DndKitProvider] dndBackend:', dndBackend);
-    
-    return () => {
-      console.log('[DndKitProvider] Unmounted');
-    };
-  }, [dndBackend]);
-  
-  // Set up default sensors with debug
+  // Use a ref to track active drag state to avoid unnecessary re-renders
+  const activeIdRef = React.useRef<string | null>(null);
+
+  // Set up default sensors with debug - memoize to prevent recreation on each render
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -36,70 +30,62 @@ const DndKitProvider: React.FC<PropsWithChildren> = ({ children }) => {
       },
     })
   );
-  
-  useEffect(() => {
-    console.log('[DndKitProvider] Sensors configured');
-  }, [sensors]);
-  
-  // Handle drag start event
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    console.log('[DndKitProvider] Drag started:', {
-      id: active.id,
-      data: active.data.current,
-    });
-    
-    // Convert UniqueIdentifier to string if it's not already
-    setActiveId(String(active.id));
-  };
 
-  // Handle drag move event
-  const handleDragMove = (event: DragMoveEvent) => {
-    console.log('[DndKitProvider] Drag move:', {
-      activeId: event.active.id,
-      overItem: event.over?.id,
-    });
-  };
-  
-  // Handle drag over event
-  const handleDragOver = (event: DragOverEvent) => {
-    console.log('[DndKitProvider] Drag over:', {
-      activeId: event.active.id,
-      overItem: event.over?.id,
-    });
-  };
+  // Handle drag start event
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const { active } = event;
+    // Convert UniqueIdentifier to string if it's not already
+    const id = String(active.id);
+    activeIdRef.current = id;
+    setActiveId(id);
+  }, []);
+
+  // Handle drag move event - keep minimal to avoid performance issues
+  const handleDragMove = useCallback((event: DragMoveEvent) => {
+    // Intentionally left minimal
+  }, []);
+
+  // Handle drag over event - keep minimal to avoid performance issues
+  const handleDragOver = useCallback((event: DragOverEvent) => {
+    // Intentionally left minimal
+  }, []);
 
   // Handle drag end event
-  const handleDragEnd = (event: DragEndEvent) => {
-    console.log('[DndKitProvider] Drag ended:', {
-      activeId: event.active.id,
-      overItem: event.over?.id,
-      delta: event.delta,
-    });
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    activeIdRef.current = null;
     setActiveId(null);
-  };
+  }, []);
 
   // Handle drag cancel event
-  const handleDragCancel = (event: DragCancelEvent) => {
-    console.log('[DndKitProvider] Drag cancelled:', {
-      activeId: event.active.id,
-    });
+  const handleDragCancel = useCallback((event: DragCancelEvent) => {
+    activeIdRef.current = null;
     setActiveId(null);
-  };
+  }, []);
+
+  // Memoize the event handlers to prevent unnecessary re-renders
+  const eventHandlers = useMemo(() => ({
+    onDragStart: handleDragStart,
+    onDragMove: handleDragMove,
+    onDragOver: handleDragOver,
+    onDragEnd: handleDragEnd,
+    onDragCancel: handleDragCancel,
+  }), [
+    handleDragStart,
+    handleDragMove,
+    handleDragOver,
+    handleDragEnd,
+    handleDragCancel
+  ]);
 
   // Always use DndContext with sensors, regardless of dndBackend
   return (
     <DndContext
       sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragMove={handleDragMove}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
+      {...eventHandlers}
     >
       {children}
     </DndContext>
   );
 };
 
-export default DndKitProvider; 
+export default React.memo(DndKitProvider);

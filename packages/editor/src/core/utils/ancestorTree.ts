@@ -1,4 +1,4 @@
-import type EditorStore from '../EditorStore';
+import type EditorStore from '../zustand/EditorStore';
 import type { Node } from '../types';
 import { mapNode } from './mapNode';
 

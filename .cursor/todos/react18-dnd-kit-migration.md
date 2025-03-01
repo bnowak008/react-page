@@ -3,6 +3,8 @@
 ## Description
 This todo file outlines the steps required to migrate from react-dnd to @dnd-kit to achieve React 18 compatibility. The migration will involve replacing the current drag and drop implementation with the more modern @dnd-kit library, which is fully compatible with React 18 and offers improved performance and features.
 
+Additionally, we need to migrate from react-draggable to @dnd-kit for resizable components to ensure full React 18 compatibility and a consistent drag and drop implementation across the codebase.
+
 - This task involves identifying all react-dnd usage in the codebase
 - Creating equivalent implementations using @dnd-kit
 - Ensuring all current functionality is preserved
@@ -42,8 +44,25 @@ This todo file outlines the steps required to migrate from react-dnd to @dnd-kit
 - List reordering functionality was updated to use @dnd-kit/sortable's SortableContext and useSortable
 - The migration improves React 18 compatibility, performance, developer experience, and adds enhanced features
 - Testing is required to ensure all functionality works as expected after the migration
+- react-draggable was being used in ResizableRowCell.tsx for resizing functionality
+- We created a useDndKitResize hook that mimics the react-draggable API but uses @dnd-kit under the hood
+- The useDndKitResize hook handles position tracking, constraints, and grid snapping similar to react-draggable
+- The ResizableRowCell component was updated to use the new useDndKitResize hook
+- The react-draggable dependency was removed from package.json
+- Fixed React 18 infinite loop warning by properly memoizing the result of useAllFocusedNodeIds
+- Fixed incorrect hook usage in GlobalHotKeys component to be compatible with React 18's concurrent rendering
 
 ## Active
+- [ ] Migrate from react-draggable to @dnd-kit
+  - [x] Create a custom hook for resizable components (useDndKitResize) (2023-07-15)
+  - [x] Update ResizableRowCell.tsx to use the new hook (2023-07-15)
+  - [ ] Ensure resize functionality works the same as before
+  - [ ] Test the implementation thoroughly
+  - [x] Remove react-draggable dependency once migration is complete (2023-07-15)
+- [ ] Fix React 18 compatibility issues
+  - [x] Fix infinite loop warning in useAllFocusedNodeIds hook (2023-07-15)
+  - [x] Fix incorrect hook usage in GlobalHotKeys component (2023-07-15)
+  - [ ] Test with React 18's concurrent mode enabled
 - [ ] Update tests to work with @dnd-kit
   - [ ] Update any tests that mock react-dnd functionality
   - [ ] Ensure all tests pass with the new implementation

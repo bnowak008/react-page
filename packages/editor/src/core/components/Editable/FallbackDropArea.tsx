@@ -14,7 +14,7 @@ const FallbackDropArea: FC<PropsWithChildren> = ({ children }) => {
   const insertNew = useInsertNew();
   const isAllowed = useCellIsAllowedHere();
   const divRef = useRef<HTMLDivElement>(null);
-  
+
   const [collected, dropRef] = useDndKitDrop<CellDrag, {}>({
     accept: 'cell',
     collect: () => ({}),

@@ -2,7 +2,7 @@ import type { FC, PropsWithChildren } from 'react';
 import React from 'react';
 import Editable from '../core/components/Editable';
 import GlobalHotKeys from '../core/components/HotKey/GlobalHotKeys';
-import { createEmptyState } from '../core/EditorStore';
+import { createInitialState } from '../core/zustand/store';
 import type { ProviderProps } from '../core/Provider';
 import Provider from '../core/Provider';
 import type { ValueWithLegacy } from '../core/types';
@@ -25,23 +25,24 @@ const EditableEditor: FC<PropsWithChildren<EditableEditorProps>> = ({
   renderOptions,
   callbacks,
 }) => {
-  const theValue = value || createEmptyState();
+  const theValue = value || null;
+  const defaultLang = lang || 'default';
 
   return (
     <Provider
-      lang={lang}
-      callbacks={callbacks}
+      lang={defaultLang}
       value={theValue}
-      renderOptions={renderOptions}
       options={options}
+      renderOptions={renderOptions}
+      callbacks={callbacks}
     >
-      {children}
       <StickyWrapper>
         {(stickyNess) => (
           <>
             <GlobalHotKeys focusRef={stickyNess.focusRef} />
             <Editable />
             <EditorUI stickyNess={stickyNess} />
+            {children}
           </>
         )}
       </StickyWrapper>

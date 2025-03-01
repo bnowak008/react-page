@@ -61,11 +61,4 @@ export const computeAndDispatchHover = (
   actions: HoverInsertActions,
   cellPlugins: CellPluginList
 ) =>
-  computeCurrentDropPosition(
-    actions,
-    hover,
-    drag,
-    event,
-    element,
-    cellPlugins
-  );
+  computeCurrentDropPosition(actions, hover, drag, event, element, cellPlugins);

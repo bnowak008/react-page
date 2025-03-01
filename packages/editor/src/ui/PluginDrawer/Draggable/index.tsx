@@ -14,26 +14,27 @@ const Draggable: FC<
   }>
 > = ({ insert, children }) => {
   const setLayoutMode = useSetLayoutMode();
-  const [{ isDragging }, dragRef, _, { attributes, listeners, style }] = useDndKitDrag<CellDrag>({
-    type: 'cell',
-    item: () => {
-      setLayoutMode();
-      return {
-        cell: insert,
-      };
-    },
-    collect: (isDragging) => ({
-      isDragging,
-    }),
-  });
+  const [{ isDragging }, dragRef, _, { attributes, listeners, style }] =
+    useDndKitDrag<CellDrag>({
+      type: 'cell',
+      item: () => {
+        setLayoutMode();
+        return {
+          cell: insert,
+        };
+      },
+      collect: (isDragging) => ({
+        isDragging,
+      }),
+    });
   const classes = classNames(
     { 'react-page-toolbar-draggable-is-dragged': isDragging },
     'react-page-toolbar-draggable'
   );
 
   return (
-    <div 
-      className={classes} 
+    <div
+      className={classes}
       ref={dragRef}
       style={style}
       {...attributes}

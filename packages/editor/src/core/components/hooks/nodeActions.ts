@@ -1,25 +1,36 @@
 import { useCallback } from 'react';
 import { getCommonAncestorTree } from '../../utils/ancestorTree';
+import { mapNode } from '../../utils/mapNode';
 
 import type { FocusMode } from '../../types/focus';
 
-import type { CellDrag, PartialCell, Node, Value, Row, Cell, I18nField } from '../../types/node';
+import type {
+  CellDrag,
+  PartialCell,
+  Node,
+  Value,
+  Row,
+  Cell,
+  I18nField,
+} from '../../types/node';
 import { isRow } from '../../types/node';
 import { useAllCellPluginsForNode } from './node';
-import { useEditorStore, useLang } from './options';
 import { cloneWithNewIds } from '../../../core/utils/cloneWithNewIds';
 import { useDisplayModeReferenceNodeId } from './displayMode';
 import type { CellPluginOnChangeOptions } from '../../types';
 import type { CellDrag as CustomCellDrag } from '../../types';
 import { useDndKitDrop } from './useDndKit';
 
-import { 
-  useSelector,
+import {
   useActions,
   useSetLang as useZustandSetLang,
   useSetFocus,
   useSetHover,
-  useUpdateValue
+  useUpdateValue,
+  useNodeWithAncestors,
+  useCurrentValue,
+  useLanguage,
+  useNode,
 } from '../../zustand/hooks';
 
 import { useValueOptimizer } from '../../zustand';
@@ -30,16 +41,16 @@ import { useValueOptimizer } from '../../zustand';
  */
 export const useSetDraft = (id: string) => {
   const updateValue = useUpdateValue();
-  const currentLang = useLang() as string;
-  
+  const currentLang = useLanguage() || '';
+
   return useCallback(
     (isDraft: boolean, lang: string = currentLang) => {
       updateValue((value: Value | null) => {
         if (!value) return value;
-        const cell = value.rows.find((row: Row) => 
-          row.cells.some((cell: Cell) => cell.id === id)
-        )?.cells.find((cell: Cell) => cell.id === id);
-        
+        const cell = value.rows
+          .find((row: Row) => row.cells.some((cell: Cell) => cell.id === id))
+          ?.cells.find((cell: Cell) => cell.id === id);
+
         if (cell) {
           cell.isDraft = isDraft;
         }
@@ -55,22 +66,25 @@ export const useSetDraft = (id: string) => {
  */
 export const useResizeCellById = () => {
   const updateValue = useUpdateValue();
-  
+  const currentValue = useCurrentValue();
+
   return useCallback(
     (nodeId: string, size: number) => {
       updateValue((value: Value | null) => {
         if (!value) return value;
-        const cell = value.rows.find((row: Row) => 
-          row.cells.some((cell: Cell) => cell.id === nodeId)
-        )?.cells.find((cell: Cell) => cell.id === nodeId);
-        
+        const cell = value.rows
+          .find((row: Row) =>
+            row.cells.some((cell: Cell) => cell.id === nodeId)
+          )
+          ?.cells.find((cell: Cell) => cell.id === nodeId);
+
         if (cell) {
           cell.size = size;
         }
         return value;
       });
     },
-    [updateValue]
+    [updateValue, currentValue]
   );
 };
 
@@ -98,18 +112,21 @@ export const useSetLang = () => {
  */
 export const useUpdateCellData = (id: string) => {
   const updateValue = useUpdateValue();
-  const currentLang = useLang() as string;
-  
+  const currentLang = useLanguage() || '';
+
   return useCallback(
-    (data: { [key: string]: unknown }, options: CellPluginOnChangeOptions = {}) => {
+    (
+      data: { [key: string]: unknown },
+      options: CellPluginOnChangeOptions = {}
+    ) => {
       const lang = options.lang || currentLang;
-      
+
       updateValue((value: Value | null) => {
         if (!value) return value;
-        
+
         // Create a copy of the value to work with
         const newValue = { ...value };
-        
+
         // Find the cell with the given id
         for (const row of newValue.rows || []) {
           for (const cell of row.cells || []) {
@@ -118,72 +135,42 @@ export const useUpdateCellData = (id: string) => {
               if (!cell.dataI18n) {
                 cell.dataI18n = {};
               }
-              
+
               // Ensure the language key exists
               const langKey = lang as string;
               if (!cell.dataI18n[langKey]) {
                 cell.dataI18n[langKey] = {};
               }
-              
+
               // Update the data for the specified language
               cell.dataI18n[langKey] = {
                 ...cell.dataI18n[langKey],
                 ...data,
               };
-              
+
               // Return the updated value
               return newValue;
             }
-            
-            // Check nested rows
-            if (cell.rows) {
-              for (const nestedRow of cell.rows) {
-                for (const nestedCell of nestedRow.cells || []) {
-                  if (nestedCell.id === id) {
-                    // Update the cell data
-                    if (!nestedCell.dataI18n) {
-                      nestedCell.dataI18n = {};
-                    }
-                    
-                    // Ensure the language key exists
-                    const langKey = lang as string;
-                    if (!nestedCell.dataI18n[langKey]) {
-                      nestedCell.dataI18n[langKey] = {};
-                    }
-                    
-                    // Update the data for the specified language
-                    nestedCell.dataI18n[langKey] = {
-                      ...nestedCell.dataI18n[langKey],
-                      ...data,
-                    };
-                    
-                    // Return the updated value
-                    return newValue;
-                  }
-                }
-              }
-            }
           }
         }
-        
-        // Cell not found, return the original value
-        return value;
+
+        return newValue;
       });
     },
-    [id, updateValue, currentLang]
+    [updateValue, id, currentLang]
   );
 };
 
 // Helper function to find a cell by id
 const findCellById = (value: Value, id: string): Cell | null => {
   if (!value || !value.rows) return null;
-  
+
   for (const row of value.rows) {
     for (const cell of row.cells) {
       if (cell.id === id) {
         return cell;
       }
-      
+
       // Check nested rows
       if (cell.rows) {
         for (const nestedRow of cell.rows) {
@@ -196,7 +183,7 @@ const findCellById = (value: Value, id: string): Cell | null => {
       }
     }
   }
-  
+
   return null;
 };
 
@@ -205,14 +192,15 @@ const findCellById = (value: Value, id: string): Cell | null => {
  */
 export const useRemoveCellById = () => {
   const updateValue = useUpdateValue();
-  
+  const currentValue = useCurrentValue();
+
   return useCallback(
     (id?: string) => {
       if (!id) return;
-      
+
       updateValue((value: Value | null) => {
         if (!value) return value;
-        
+
         // Find and remove the cell
         value.rows.forEach((row: Row) => {
           const cellIndex = row.cells.findIndex((cell: Cell) => cell.id === id);
@@ -220,15 +208,17 @@ export const useRemoveCellById = () => {
             row.cells.splice(cellIndex, 1);
           }
         });
-        
+
         // Remove empty rows
-        const rowsToKeep = value.rows.filter((row: Row) => row.cells.length > 0);
+        const rowsToKeep = value.rows.filter(
+          (row: Row) => row.cells.length > 0
+        );
         value.rows = rowsToKeep;
-        
+
         return value;
       });
     },
-    [updateValue]
+    [updateValue, currentValue]
   );
 };
 
@@ -242,32 +232,36 @@ export const useRemoveCell = (id: string) => {
 };
 
 /**
- *
- * @returns a function to remove muliple nodeids
+ * @returns a function that removes multiple nodes by their ids
  */
 export const useRemoveMultipleNodeIds = () => {
   const updateValue = useUpdateValue();
-  
+  const currentValue = useCurrentValue();
+
   return useCallback(
     (nodeIds: string[]) => {
       if (!nodeIds.length) return;
-      
+
       updateValue((value: Value | null) => {
         if (!value) return value;
-        
+
         // Find and remove the cells
         value.rows.forEach((row: Row) => {
-          row.cells = row.cells.filter((cell: Cell) => !nodeIds.includes(cell.id));
+          row.cells = row.cells.filter(
+            (cell: Cell) => !nodeIds.includes(cell.id)
+          );
         });
-        
+
         // Remove empty rows
-        const rowsToKeep = value.rows.filter((row: Row) => row.cells.length > 0);
+        const rowsToKeep = value.rows.filter(
+          (row: Row) => row.cells.length > 0
+        );
         value.rows = rowsToKeep;
-        
+
         return value;
       });
     },
-    [updateValue]
+    [updateValue, currentValue]
   );
 };
 
@@ -276,55 +270,62 @@ export const useRemoveMultipleNodeIds = () => {
  */
 export const useDuplicateCellById = () => {
   const updateValue = useUpdateValue();
-  const editor = useEditorStore();
+  const getNode = useNode;
 
   return useCallback(
     (id: string) => {
-      const node = editor && editor.getNode(id);
+      const node = getNode(id);
       if (!node) return;
-      
+
       updateValue((value: Value | null) => {
         if (!value) return value;
-        
+
         // Find the row containing the cell
-        const rowIndex = value.rows.findIndex((row: Row) => 
+        const rowIndex = value.rows.findIndex((row: Row) =>
           row.cells.some((cell: Cell) => cell.id === id)
         );
-        
+
         if (rowIndex >= 0) {
-          const cellIndex = value.rows[rowIndex].cells.findIndex((cell: Cell) => cell.id === id);
+          const cellIndex = value.rows[rowIndex].cells.findIndex(
+            (cell: Cell) => cell.id === id
+          );
           if (cellIndex >= 0) {
             // Clone the cell with new IDs
-            const clonedCell = cloneWithNewIds(value.rows[rowIndex].cells[cellIndex]);
+            const clonedCell = cloneWithNewIds(
+              value.rows[rowIndex].cells[cellIndex]
+            );
             // Insert after the original cell
             value.rows[rowIndex].cells.splice(cellIndex + 1, 0, clonedCell);
           }
         }
-        
+
         return value;
       });
     },
-    [editor, updateValue]
+    [updateValue, getNode]
   );
 };
 
 export const useInsertAfter = () => {
   const updateValue = useUpdateValue();
   const insertNew = useInsertNew();
+  const currentValue = useCurrentValue();
 
   return useCallback(
     (node: Node, insertAfterNodeId?: string | null) => {
       if (insertAfterNodeId) {
         updateValue((value: Value | null) => {
           if (!value) return value;
-          
+
           // Find the row containing the cell
-          const rowIndex = value.rows.findIndex((row: Row) => 
+          const rowIndex = value.rows.findIndex((row: Row) =>
             row.cells.some((cell: Cell) => cell.id === insertAfterNodeId)
           );
-          
+
           if (rowIndex >= 0) {
-            const cellIndex = value.rows[rowIndex].cells.findIndex((cell: Cell) => cell.id === insertAfterNodeId);
+            const cellIndex = value.rows[rowIndex].cells.findIndex(
+              (cell: Cell) => cell.id === insertAfterNodeId
+            );
             if (cellIndex >= 0) {
               // Clone the node with new IDs
               const clonedNode = cloneWithNewIds(node);
@@ -332,7 +333,7 @@ export const useInsertAfter = () => {
               value.rows[rowIndex].cells.splice(cellIndex + 1, 0, clonedNode);
             }
           }
-          
+
           return value;
         });
       } else {
@@ -340,7 +341,7 @@ export const useInsertAfter = () => {
         insertNew(cloneWithNewIds(node));
       }
     },
-    [updateValue, insertNew]
+    [updateValue, insertNew, currentValue]
   );
 };
 
@@ -348,22 +349,97 @@ export const useInsertAfter = () => {
  * @returns a function that duplicates multiple cell
  */
 export const useDuplicateMultipleCells = () => {
-  const editor = useEditorStore();
   const insertAfter = useInsertAfter();
+  const nodeWithAncestors = useNodeWithAncestors;
 
   return useCallback(
     (cellIds: string[]) => {
-      const node = editor && getCommonAncestorTree(editor, cellIds);
-      if (!node) {
-        return;
+      // Get all nodes with their ancestors
+      const nodesWithAncestors = cellIds
+        .map((nodeId) => {
+          const result = nodeWithAncestors(nodeId);
+          if (!result) return { node: null, ancestors: [] };
+          return {
+            node: result.node,
+            ancestors: [...result.ancestors].reverse(),
+          };
+        })
+        .filter((n) => n.node !== null);
+
+      if (nodesWithAncestors.length === 0) return;
+
+      // Find common ancestors
+      let nearestCommonAncestor: Node | null = null;
+      let depth = 0;
+      let search = true;
+      while (search) {
+        // Check if every node has the same ancestor
+        if (
+          nodesWithAncestors.every(
+            (n) =>
+              n.ancestors[depth] &&
+              n.ancestors[depth]?.id ===
+                nodesWithAncestors[0].ancestors[depth]?.id
+          )
+        ) {
+          nearestCommonAncestor = nodesWithAncestors[0].ancestors[depth];
+          depth++;
+        } else {
+          search = false;
+        }
       }
+
+      if (!nearestCommonAncestor) return;
+
+      // Clean up the ancestor tree
+      const node = mapNode(nearestCommonAncestor, {
+        skipMapCell: (c) => {
+          return cellIds.includes(c.id);
+        },
+        // Remove cells without rows
+        mapCell: (c) => {
+          if (c.rows?.length) {
+            return c;
+          } else {
+            return null;
+          }
+        },
+        // Remove empty cells from rows and remove row completely if it's empty
+        mapRowDown: (r) => {
+          if (!r) return null;
+          const row = {
+            ...r,
+            cells: r.cells.filter(Boolean) ?? [],
+          };
+          if (row.cells.length === 0) {
+            return null;
+          }
+          return row;
+        },
+        // Remove empty rows of cells
+        mapCellDown: (c) => {
+          if (!c) return null;
+          const cell = {
+            ...c,
+            rows: c?.rows?.filter(Boolean) ?? [],
+          };
+          if (cell.rows?.length > 0 || cellIds.includes(cell.id)) {
+            return cell;
+          } else {
+            return null;
+          }
+        },
+      });
+
+      if (!node) return;
+
       const insertAfterNodeId = isRow(node)
         ? node.id
         : node?.rows?.[node?.rows?.length ?? 0 - 1]?.id;
 
       insertAfter(node, insertAfterNodeId);
     },
-    [editor, insertAfter]
+    [insertAfter, nodeWithAncestors]
   );
 };
 
@@ -382,19 +458,16 @@ export const useDuplicateCell = (id: string) => {
  * @returns function to set the reference node id. used internally
  */
 export const useSetDisplayReferenceNodeId = () => {
-  const { setDisplayMode } = useActions();
+  const { setDisplayMode, setDisplayReferenceNodeId } = useActions();
   const referenceId = useDisplayModeReferenceNodeId();
 
   return useCallback(
     (nodeId?: string | null) => {
       if (nodeId !== referenceId) {
-        setDisplayMode({
-          mode: 'edit',
-          referenceNodeId: nodeId
-        });
+        setDisplayReferenceNodeId(nodeId || null);
       }
     },
-    [setDisplayMode, referenceId]
+    [setDisplayReferenceNodeId, referenceId]
   );
 };
 
@@ -404,25 +477,26 @@ export const useSetDisplayReferenceNodeId = () => {
 export const useFocusCellById = () => {
   const setFocus = useSetFocus();
   const setDisplayRef = useSetDisplayReferenceNodeId();
-  const editor = useEditorStore();
+  const nodeWithAncestors = useNodeWithAncestors;
 
   return useCallback(
     (id: string, scrollToCell?: boolean, mode?: FocusMode) => {
-      if (!editor) {
+      const result = nodeWithAncestors(id);
+      if (!result) {
         return;
       }
-      const parentCellId = editor
-        .getNodeWithAncestors(id)
-        ?.ancestors?.find((node: Node) => !isRow(node))?.id;
+      const parentCellId = result.ancestors?.find(
+        (node: Node) => !isRow(node)
+      )?.id;
 
       setDisplayRef(parentCellId);
       setFocus({
-        nodeId: id,
+        nodeIds: id ? [id] : [],
         scrollToCell: scrollToCell || false,
-        source: mode || null
+        mode: mode || null,
       });
     },
-    [setFocus, setDisplayRef, editor]
+    [setFocus, setDisplayRef, nodeWithAncestors]
   );
 };
 
@@ -448,12 +522,9 @@ export const useFocusCell = (id?: string | null) => {
 export const useBlurCell = () => {
   const setFocus = useSetFocus();
 
-  return useCallback(
-    (id: string) => {
-      setFocus(null);
-    },
-    [setFocus]
-  );
+  return useCallback(() => {
+    setFocus(null);
+  }, [setFocus]);
 };
 
 /**
@@ -472,44 +543,45 @@ export const useBlurAllCells = () => {
  *
  * if the id already exists, it will move that cell
  */
-export const useInsertNew = (parentCellId?: string) => {
+export const useInsertNew = (parentCellId?: string | null) => {
   const updateValue = useUpdateValue();
   const cellPlugins = useAllCellPluginsForNode(parentCellId);
-  const editor = useEditorStore();
-  const lang = useLang() as string;
+  const lang = useLanguage() || '';
   const setFocus = useSetFocus();
-  
+
   return useCallback(
     (partialCell: PartialCell) => {
       updateValue((value: Value | null) => {
         if (!value) return value;
-        
+
         // Create a new cell from the partial cell
         const newCell: Cell = {
           id: partialCell.id || Math.random().toString(36).substring(2, 15),
           ...partialCell,
         } as Cell; // Cast to Cell type
-        
+
         if (parentCellId) {
           // Insert as a new row in the parent cell
-          const parentRow = value.rows.find((row: Row) => 
+          const parentRow = value.rows.find((row: Row) =>
             row.cells.some((cell: Cell) => cell.id === parentCellId)
           );
-          
+
           if (parentRow) {
-            const parentCellIndex = parentRow.cells.findIndex((cell: Cell) => cell.id === parentCellId);
+            const parentCellIndex = parentRow.cells.findIndex(
+              (cell: Cell) => cell.id === parentCellId
+            );
             if (parentCellIndex >= 0) {
               // Create a new row with the new cell
               const newRow: Row = {
                 id: Math.random().toString(36).substring(2, 15),
-                cells: [newCell]
+                cells: [newCell],
               };
-              
+
               // Add the new row to the parent cell's rows
               if (!parentRow.cells[parentCellIndex].rows) {
                 parentRow.cells[parentCellIndex].rows = [];
               }
-              parentRow.cells[parentCellIndex].rows.push(newRow);
+              parentRow.cells[parentCellIndex].rows?.push(newRow);
             }
           }
         } else {
@@ -517,29 +589,29 @@ export const useInsertNew = (parentCellId?: string) => {
           if (!value.rows) {
             value.rows = [];
           }
-          
+
           // Create a new row with the new cell
           const newRow: Row = {
             id: Math.random().toString(36).substring(2, 15),
-            cells: [newCell]
+            cells: [newCell],
           };
-          
+
           value.rows.push(newRow);
         }
-        
+
         return value;
       });
-      
+
       // Focus the new cell
       setTimeout(() => {
         setFocus({
-          nodeId: partialCell.id || '',
+          nodeIds: partialCell.id ? [partialCell.id] : [],
           scrollToCell: true,
-          source: null
+          mode: null,
         });
       }, 0);
     },
-    [updateValue, editor, cellPlugins, parentCellId, lang, setFocus]
+    [updateValue, cellPlugins, parentCellId, lang, setFocus]
   );
 };
 
@@ -554,7 +626,7 @@ export const useTrashDrop = () => {
     collect: (monitor) => ({
       isHovering: monitor.isOver({ shallow: true }),
     }),
-    drop: (item, monitor) => {
+    drop: (item: CustomCellDrag, monitor) => {
       if (item?.cell) {
         removeCell(item.cell.id);
       }

@@ -3,19 +3,19 @@ import ListMaterial from '@mui/material/List';
 import ListSubheader from '@mui/material/ListSubheader';
 import type { ReactNode } from 'react';
 import React, { Children, cloneElement, isValidElement, useState } from 'react';
-import { 
-  DndContext, 
+import type { DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent
 } from '@dnd-kit/core';
-import { 
-  SortableContext, 
+import {
+  SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { FieldProps } from 'uniforms';
 import { connectField, filterDOMProps } from 'uniforms';
@@ -54,12 +54,17 @@ function List({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
+
     if (over && active.id !== over.id) {
       const oldIndex = active.data.current?.index;
       const newIndex = over.data.current?.index;
-      
-      if (typeof oldIndex === 'number' && typeof newIndex === 'number' && onChange && value) {
+
+      if (
+        typeof oldIndex === 'number' &&
+        typeof newIndex === 'number' &&
+        onChange &&
+        value
+      ) {
         const newValue = [...value];
         const [removed] = newValue.splice(oldIndex, 1);
         newValue.splice(newIndex, 0, removed);
@@ -77,10 +82,7 @@ function List({
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext 
-          items={items}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={items} strategy={verticalListSortingStrategy}>
           <ListMaterial
             dense
             subheader={

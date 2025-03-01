@@ -22,7 +22,7 @@ const EditorStoreProvider: FC<
   const storeFromOptions = useOption('store');
   const onChangeLang = useCallbackOption('onChangeLang');
   const onChange = useCallbackOption('onChange');
-  
+
   const editorStore = useMemo<EditorStore>(() => {
     const store = new EditorStore({
       initialState: createInitialState(
@@ -36,12 +36,12 @@ const EditorStoreProvider: FC<
     });
     return store;
   }, [storeFromOptions]);
-  
+
   const lastValueRef = useRef<ValueWithLegacy | null>(value);
-  
+
   useEffect(() => {
     let oldLang: string | undefined = lang;
-    
+
     const handleChanges = () => {
       // notify outsiders to new language, when changed in ui
       const newLang = editorStore.getState().reactPage.settings.lang;
@@ -49,17 +49,17 @@ const EditorStoreProvider: FC<
         oldLang = newLang;
         onChangeLang?.(newLang);
       }
-      
+
       if (!onChange) {
         return;
       }
-      
+
       const currentValue = editorStore.getState().reactPage.values.present;
 
       if (!currentValue) {
         return;
       }
-      
+
       const serializedValue = serialzeValue(currentValue, cellPlugins);
       const serializedEqual = deepEquals(lastValueRef.current, serializedValue);
 
@@ -70,10 +70,10 @@ const EditorStoreProvider: FC<
       lastValueRef.current = serializedValue;
       onChange(serializedValue);
     };
-    
+
     // Subscribe to store changes
     const unsubscribe = editorStore.subscribe(handleChanges);
-    
+
     return () => {
       unsubscribe();
     };
@@ -92,7 +92,7 @@ const EditorStoreProvider: FC<
       editorStore.updateValue(migratedValue);
     }
   }, [value, cellPlugins, lang]);
-  
+
   useEffect(() => {
     // if changed from outside
     editorStore.setLang(lang);
@@ -105,4 +105,4 @@ const EditorStoreProvider: FC<
   );
 };
 
-export default EditorStoreProvider; 
+export default EditorStoreProvider;

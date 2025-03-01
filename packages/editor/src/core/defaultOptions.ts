@@ -1,7 +1,7 @@
 import type { Options, RenderOptions } from './types';
 
 import { PointerSensor } from '@dnd-kit/core';
-import { DISPLAY_MODE_EDIT } from './actions/display';
+import { DISPLAY_MODE_EDIT } from './types/display';
 import { defaultTheme } from '../ui';
 
 export const DEFAULT_OPTIONS: Required<Options> = {

@@ -1,5 +1,4 @@
 import React from 'react';
-import Draggable from 'react-draggable';
 import { useMeasure } from 'react-use';
 import Cell from '../Cell';
 import {
@@ -9,6 +8,7 @@ import {
   useResizeCell,
   useCellSpacing,
   useOption,
+  useDndKitResize,
 } from '../hooks';
 
 type Props = {
@@ -43,47 +43,57 @@ const ResizableRowCell: React.FC<Props> = ({
     !isLast &&
     (isResizeMode || (allowResizeInEditMode && isEditMode));
 
+  // Calculate the initial position based on the offset
+  const initialPosition = {
+    x: rowHasInlineChildrenPosition === 'right'
+      ? Math.round(stepWidth * (12 - offset))
+      : Math.round(stepWidth * offset),
+    y: 0,
+  };
+
+  // Use our custom resize hook
+  const [position, resizeRef, listeners, attributes, style, isDragging] = useDndKitResize({
+    axis: 'x',
+    bounds: {
+      left: Math.round(stepWidth),
+      right: Math.round(rowWidth - stepWidth),
+    },
+    grid: [Math.round(stepWidth), 0],
+    position: initialPosition,
+    onDrag: ({ x }: { x: number; y: number }) => {
+      // Calculate the size change based on the drag delta
+      const diff = Math.round(x / stepWidth);
+      const newSize =
+        rowHasInlineChildrenPosition === 'right'
+          ? size - diff
+          : size + diff;
+      
+      // Only resize if the new size is valid
+      if (newSize > 0 && newSize <= maxSize) {
+        resize(newSize);
+      }
+    },
+  });
+
   return (
     <>
       <Cell nodeId={nodeId} measureRef={ref} />
 
       {showResizeHandle ? (
-        <Draggable
-          bounds={{
-            top: 0,
-            bottom: 0,
-            left: Math.round(stepWidth),
-            right: Math.round(rowWidth - stepWidth),
+        <div
+          ref={resizeRef}
+          {...attributes}
+          {...listeners}
+          className="resize-handle"
+          style={{
+            ...style,
+            // fix floating style
+            height: rowHasInlineChildrenPosition ? cellHeight : 'auto',
+            margin: cellSpacingY !== 0 ? `${cellSpacingY / 2}px 0` : undefined,
+            cursor: 'col-resize',
           }}
-          position={{
-            x:
-              rowHasInlineChildrenPosition === 'right'
-                ? Math.round(stepWidth * (12 - offset))
-                : Math.round(stepWidth * offset),
-            y: 0,
-          }}
-          axis="x"
-          onDrag={(e, data) => {
-            const diff = Math.round(data.deltaX / stepWidth);
-            const newSize =
-              rowHasInlineChildrenPosition === 'right'
-                ? size - diff
-                : size + diff;
-            if (newSize > 0 && newSize <= maxSize) resize(newSize);
-          }}
-          grid={[Math.round(stepWidth), 0]}
-        >
-          <div
-            className="resize-handle"
-            style={{
-              // fix floating style
-              height: rowHasInlineChildrenPosition ? cellHeight : 'auto',
-              margin:
-                cellSpacingY !== 0 ? `${cellSpacingY / 2}px 0` : undefined,
-            }}
-            onClick={(e) => e.stopPropagation()}
-          ></div>
-        </Draggable>
+          onClick={(e) => e.stopPropagation()}
+        ></div>
       ) : null}
     </>
   );

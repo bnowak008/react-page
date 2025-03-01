@@ -2,8 +2,8 @@ import classNames from 'classnames';
 import React from 'react';
 import NoopProvider from '../core/components/Cell/NoopProvider';
 import { migrateValue } from '../core/migrations/migrate';
-import { optimizeRows } from '../core/reducer/value/helper/optimize';
-import { setAllSizesAndOptimize } from '../core/reducer/value/helper/setAllSizesAndOptimize';
+import { optimizeRows } from '../core/zustand/helpers/optimize';
+import { setAllSizesAndOptimize } from '../core/zustand/helpers/setAllSizesAndOptimize';
 import type {
   Cell,
   CellPluginList,

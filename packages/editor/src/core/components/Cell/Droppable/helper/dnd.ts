@@ -76,19 +76,19 @@ export const onHover = throttle(
           current: {
             initial: {
               left: 0,
-              top: 0
+              top: 0,
             },
-            translated: null
-          }
-        }
+            translated: null,
+          },
+        },
       },
       over: {
         id: target.id,
         rect: {
           left: 0,
-          top: 0
-        }
-      }
+          top: 0,
+        },
+      },
     };
 
     computeAndDispatchHover(
@@ -140,19 +140,19 @@ export const onDrop = (
         current: {
           initial: {
             left: 0,
-            top: 0
+            top: 0,
           },
-          translated: null
-        }
-      }
+          translated: null,
+        },
+      },
     },
     over: {
       id: target.id,
       rect: {
         left: 0,
-        top: 0
-      }
-    }
+        top: 0,
+      },
+    },
   };
 
   computeAndDispatchInsert(

@@ -12,7 +12,7 @@ export const Trash: React.FC = React.memo(() => {
   const isLayoutMode = useIsLayoutMode();
   const [collected, ref] = useTrashDrop();
   const isHovering = (collected as CollectedProps)?.isHovering || false;
-  
+
   return (
     <div
       ref={ref}

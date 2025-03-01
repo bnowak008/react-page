@@ -42,7 +42,6 @@
     "lodash.flatten": "^4.4.0",
     "lodash.throttle": "^4.1.1",
     "react-color": "^2.19.3",
-    "react-draggable": "4.4.5",
     "react-portal": "^4.2.2",
     "react-use": "^17.4.0",
     "tslib": "^2.2.0",

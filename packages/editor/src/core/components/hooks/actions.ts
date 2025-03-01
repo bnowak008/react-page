@@ -4,7 +4,11 @@ import { useCallback } from 'react';
 // import { useDispatch, useSelector } from '../../reduxConnect';
 
 // Import Zustand hooks
-import { useUndo as useZustandUndo, useRedo as useZustandRedo, useSelector } from '../../zustand/hooks';
+import {
+  useUndo as useZustandUndo,
+  useRedo as useZustandRedo,
+  useSelector,
+} from '../../zustand/hooks';
 
 /**
  * @returns function, that undos last change if called

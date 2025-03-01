@@ -23,10 +23,10 @@ describe('lazyLoad', () => {
     // Call the load method to preload the component
     const loadPromise = LazyTestComponent.load();
     expect(loadPromise instanceof Promise).toBe(true);
-    
+
     // The promise should resolve to an object
     const module = await loadPromise;
     expect(typeof module).toBe('object');
     expect(module).not.toBeNull();
   });
-}); 
+});

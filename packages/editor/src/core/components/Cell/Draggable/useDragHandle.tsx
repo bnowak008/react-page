@@ -9,8 +9,13 @@ export const dragIcon =
 export const useDragHandle = (nodeId: string, enabled = true) => {
   const actions = useHoverActions();
   const cell = useCell(nodeId);
-  
-  const [{ isDragging }, dragRef, previewElement, { handleDragStart, handleDragEnd, handleDragCancel }] = useDndKitDrag<CellDrag>({
+
+  const [
+    { isDragging },
+    dragRef,
+    previewElement,
+    { handleDragStart, handleDragEnd, handleDragCancel },
+  ] = useDndKitDrag<CellDrag>({
     type: 'cell',
     canDrag: enabled,
     item: () => {
@@ -29,7 +34,7 @@ export const useDragHandle = (nodeId: string, enabled = true) => {
       actions.cancelCellDrag();
     },
   });
-  
+
   // We'll handle the preview element in the DndKitProvider
   return [isDragging, dragRef, previewElement] as const;
 };

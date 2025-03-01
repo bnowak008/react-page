@@ -2,7 +2,7 @@ import type { Value, Node, NodeWithAncestors } from '../types/node';
 import { isRow } from '../types/node';
 import type { RootState } from '../zustand/store';
 
-/** 
+/**
  * Recursively finds a node by its ID in a tree of nodes
  */
 const findNode = (
@@ -37,23 +37,26 @@ const findNode = (
  * Finds a node in the state by its ID
  * Uses a cache to improve performance
  */
-export const findNodeInState = (state: RootState, nodeId: string): NodeWithAncestors | null => {
+export const findNodeInState = (
+  state: RootState,
+  nodeId: string
+): NodeWithAncestors | null => {
   // POOR mans node cache
   // it gets removed every time the state changes in the updateValue action
   if (!state.reactPage.__nodeCache) {
     state.reactPage.__nodeCache = {};
   }
-  
+
   // Return from cache if available
   if (state.reactPage.__nodeCache[nodeId]) {
     return state.reactPage.__nodeCache[nodeId];
   }
-  
+
   // Return null if no value is present
   if (!state.reactPage.values?.present) {
     return null;
   }
-  
+
   // Find the node in the tree
   const result = findNode(
     [
@@ -64,10 +67,10 @@ export const findNodeInState = (state: RootState, nodeId: string): NodeWithAnces
     ],
     nodeId
   );
-  
+
   // Cache the result
   state.reactPage.__nodeCache[nodeId] = result;
-  
+
   return result;
 };
 
@@ -87,4 +90,4 @@ export const selectNode = (
   nodeId: string
 ): NodeWithAncestors | null => {
   return findNodeInState(state, nodeId);
-}; 
+};

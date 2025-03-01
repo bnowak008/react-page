@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { FC, PropsWithChildren } from 'react';
 import React, { useEffect } from 'react';
-import type { DisplayModes } from '../actions/display';
-import { DISPLAY_MODE_EDIT } from '../actions/display';
+import type { DisplayModes } from '../types/display';
+import { DISPLAY_MODE_EDIT } from '../types/display';
 import {
   useBlurAllCells,
   useIsInsertMode,

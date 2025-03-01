@@ -1,7 +1,10 @@
 export type Focus = {
-  nodeId: string;
+  nodeIds: string[];
   scrollToCell?: boolean;
-  source?: FocusMode;
+  mode?: FocusMode;
 };
 
-export type FocusMode = 'replace' | 'blur' | null;
+/**
+ * Focus mode for cells
+ */
+export type FocusMode = 'replace' | 'blur' | 'add' | null;

@@ -1,72 +1,58 @@
 import { useCallback } from 'react';
-import type { DisplayModes } from '../../actions/display';
+import type { DisplayModes } from '../../types/display';
 import {
   DISPLAY_MODE_EDIT,
   DISPLAY_MODE_INSERT,
   DISPLAY_MODE_LAYOUT,
   DISPLAY_MODE_PREVIEW,
   DISPLAY_MODE_RESIZING,
-} from '../../actions/display';
-import { useSelector, useSetDisplayMode } from '../../zustand/hooks';
-
+} from '../../types/display';
 import {
-  isEditMode,
-  isInsertMode,
-  isLayoutMode,
-  isPreviewMode,
-  isResizeMode,
-} from '../../selector/display';
+  useDisplayMode as useZustandDisplayMode,
+  useDisplayReferenceNodeId,
+  useIsEditMode as useZustandIsEditMode,
+  useIsInsertMode as useZustandIsInsertMode,
+  useIsLayoutMode as useZustandIsLayoutMode,
+  useIsPreviewMode as useZustandIsPreviewMode,
+  useIsResizingMode as useZustandIsResizingMode,
+  useSetDisplayMode,
+} from '../../zustand/hooks';
 
 /**
  * @returns true whether the editor is in edit mode
  */
-export const useIsEditMode = () => {
-  return useSelector(isEditMode);
-};
+export const useIsEditMode = useZustandIsEditMode;
 
 /**
  * @returns true whether the editor is in insert mode
  */
-export const useIsInsertMode = () => {
-  return useSelector(isInsertMode);
-};
+export const useIsInsertMode = useZustandIsInsertMode;
+
 /**
  * @returns true whether the editor is in layout mode
  */
-export const useIsLayoutMode = () => {
-  return useSelector(isLayoutMode);
-};
+export const useIsLayoutMode = useZustandIsLayoutMode;
 
 /**
  * @returns true whether the editor is in preview mode mode
  */
-export const useIsPreviewMode = () => {
-  return useSelector(isPreviewMode);
-};
+export const useIsPreviewMode = useZustandIsPreviewMode;
 
 /**
  * @returns true whether the editor is in resize mode mode
  */
-export const useIsResizeMode = () => {
-  return useSelector(isResizeMode);
-};
+export const useIsResizeMode = useZustandIsResizingMode;
 
 /**
  * @returns the current display mode
  */
-export const useDisplayMode = () => {
-  return useSelector((state) => state.reactPage.display.mode);
-};
+export const useDisplayMode = useZustandDisplayMode;
 
 /**
  * experimental, used internaly for the add new button.
  * @returns a referenced nodeId for the current display mode.
- *
- *
  */
-export const useDisplayModeReferenceNodeId = () => {
-  return useSelector((state) => state.reactPage?.display?.referenceNodeId);
-};
+export const useDisplayModeReferenceNodeId = useDisplayReferenceNodeId;
 
 /**
  * @returns function to set the display mode
@@ -75,8 +61,8 @@ export const useSetMode = () => {
   const setDisplayMode = useSetDisplayMode();
 
   return useCallback(
-    (mode: DisplayModes, referenceNodeId?: string) => {
-      setDisplayMode(mode);
+    (mode: string, referenceNodeId?: string) => {
+      setDisplayMode(mode as any);
     },
     [setDisplayMode]
   );

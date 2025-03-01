@@ -86,4 +86,4 @@ export const computeSizes = (cells: Array<Cell> = []): Array<Cell> => {
   }
 
   return cells;
-}; 
+};

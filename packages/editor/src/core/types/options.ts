@@ -1,7 +1,7 @@
 import type { Theme } from '@mui/material';
 import type { Middleware, Store } from 'redux';
-import type { DisplayModes } from '../actions/display';
-import type { Languages } from '../EditorStore';
+import type { DisplayModes } from './display';
+import type { Languages } from '../zustand/EditorStore';
 import type { RootState } from '../types';
 import type { Components } from './components';
 import type { ChildConstraints } from './constraints';

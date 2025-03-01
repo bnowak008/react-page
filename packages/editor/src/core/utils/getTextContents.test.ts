@@ -70,7 +70,7 @@ describe('getTextContents', () => {
     },
     {
       lang: 'en',
-      cellPlugins,
+      plugins: cellPlugins,
     }
   );
 

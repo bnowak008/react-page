@@ -54,6 +54,17 @@ This todo file outlines the steps required to migrate the state management in Re
 - The EditorStoreProvider component has been created to provide the Zustand store to the application
 - All components have been updated to use Zustand hooks instead of Redux hooks
 - Complex hooks like nodeActions.ts and dragDropActions.ts have been updated to use Zustand actions
+- We initially implemented a Redux-like selector pattern with Zustand, which doesn't take full advantage of Zustand's simplicity
+- We need to refactor to use Zustand's direct store access capabilities instead of selectors
+- We need to fix type errors and inconsistencies in the codebase
+- We need to complete the migration by removing all Redux dependencies and updating all components
+- Zustand's direct access model is more efficient and simpler than Redux's selector pattern
+- The current implementation has created selector files that mimic Redux patterns, which adds unnecessary complexity
+- We should leverage Zustand's ability to directly access and update state without selectors or action creators
+- Type errors in files like dragDropActions.ts and nodeActions.ts need to be fixed to complete the migration
+- The Focus type has been updated to use nodeIds instead of nodeId, which requires updates in components
+- The DisplayModes type has been updated to include a referenceNodeId property, which requires updates in components
+- We should create custom hooks that encapsulate both state access and state updates for a cleaner API
 
 ## Active
 - [x] Analyze current Redux implementation
@@ -84,62 +95,67 @@ This todo file outlines the steps required to migrate the state management in Re
   - [x] Implement custom middleware if needed
   - [x] Ensure it works with the current undo/redo actions
 
-- [x] Update components
+- [ ] Update components
   - [x] Create custom hooks to replace useSelector and useDispatch
   - [x] Update basic hooks to use Zustand hooks
-  - [x] Update complex hooks to use Zustand actions
-  - [x] Ensure all components receive the correct state and actions
+  - [x] Fix type errors in Focus type (nodeId to nodeIds)
+  - [x] Update store tests to use correct types
+  - [ ] Update complex hooks to use Zustand actions
+  - [ ] Ensure all components receive the correct state and actions
+  - [ ] Refactor to use Zustand's direct access model instead of selectors
+  - [ ] Fix remaining type errors in dragDropActions.ts and nodeActions.ts
+  - [ ] Update components to use the new Focus and DisplayModes types
 
-- [x] Test the migration
+- [ ] Test the migration
   - [x] Create unit tests for the new store
     - [x] Test store initialization with default values
     - [x] Test store initialization with custom values
     - [x] Test store subscription and updates
-  - [x] Test all actions and state changes
+  - [ ] Test all actions and state changes
     - [x] Test value actions (updateValue)
     - [x] Test undo/redo actions
     - [x] Test setting actions (setLang)
     - [x] Test display actions (setDisplayMode, setDisplayZoom)
     - [x] Test focus actions (setFocus)
     - [x] Test hover actions (setHover)
-  - [x] Ensure undo/redo functionality works correctly
-    - [x] Test undo after multiple changes
-    - [x] Test redo after multiple undos
-    - [x] Test that future history is cleared when a new action is performed after undos
-  - [x] Test performance improvements
-    - [x] Compare render times between Redux and Zustand implementations
-    - [x] Compare bundle size between Redux and Zustand implementations
-    - [x] Compare memory usage between Redux and Zustand implementations
+  - [ ] Ensure undo/redo functionality works correctly
+    - [ ] Test undo after multiple changes
+    - [ ] Test redo after multiple undos
+    - [ ] Test that future history is cleared when a new action is performed after undos
+  - [ ] Test performance improvements
+    - [ ] Compare render times between Redux and Zustand implementations
+    - [ ] Compare bundle size between Redux and Zustand implementations
+    - [ ] Compare memory usage between Redux and Zustand implementations
 
 ## Pending
 - [ ] Update documentation
-  - [x] Update API documentation to reflect the new implementation
-    - [x] Document the new store structure
-    - [x] Document the new hooks
-    - [x] Document the migration from Redux to Zustand
-  - [x] Create migration guides for plugin developers
-    - [x] Guide for updating plugins to use Zustand hooks
-    - [x] Guide for accessing state in plugins
-  - [x] Document the new state management approach
-    - [x] Overview of the Zustand implementation
-    - [x] Comparison with the previous Redux implementation
-    - [x] Best practices for working with the new implementation
+  - [ ] Update API documentation to reflect the new implementation
+    - [ ] Document the new store structure
+    - [ ] Document the new hooks
+    - [ ] Document the migration from Redux to Zustand
+  - [ ] Create migration guides for plugin developers
+    - [ ] Guide for updating plugins to use Zustand hooks
+    - [ ] Guide for accessing state in plugins
+  - [ ] Document the new state management approach
+    - [ ] Overview of the Zustand implementation
+    - [ ] Comparison with the previous Redux implementation
+    - [ ] Best practices for working with the new implementation
 
 - [ ] Clean up
-  - [x] Remove Redux dependencies
-    - [x] Remove redux package
-    - [x] Remove react-redux package
-    - [x] Remove redux-thunk package
-    - [x] Remove redux-undo package
-  - [x] Remove unused code
-    - [x] Remove Redux actions
-    - [x] Remove Redux reducers
-    - [x] Remove Redux selectors
-    - [x] Remove Redux middleware
-  - [x] Optimize bundle size
-    - [x] Analyze bundle size before and after cleanup
-    - [x] Identify and remove any remaining unused code
-    - [x] Ensure tree-shaking is working correctly
+  - [ ] Remove Redux dependencies
+    - [ ] Remove redux package
+    - [ ] Remove react-redux package
+    - [ ] Remove redux-thunk package
+    - [ ] Remove redux-undo package
+  - [ ] Remove unused code
+    - [ ] Remove Redux actions
+    - [ ] Remove Redux reducers
+    - [ ] Remove Redux selectors
+    - [ ] Remove Redux middleware
+  - [ ] Optimize bundle size
+    - [ ] Analyze bundle size before and after cleanup
+    - [ ] Identify and remove any remaining unused code
+    - [ ] Ensure tree-shaking is working correctly
 
 ## Completed
 - [x] Initial research on Zustand vs Redux

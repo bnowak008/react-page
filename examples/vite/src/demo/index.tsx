@@ -629,8 +629,7 @@ export const demo: Value = {
           dataI18n: {
             en: {
               language: 'tsx',
-              code: require('!!raw-loader!../plugins/customContentPluginTwitter.tsx')
-                .default,
+              code: '',
             },
           },
           rows: [],

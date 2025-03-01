@@ -2,10 +2,9 @@ import type { FC, PropsWithChildren } from 'react';
 import React, { createContext, useContext, useRef } from 'react';
 import deepEquals from '../../utils/deepEquals';
 import { DEFAULT_OPTIONS } from '../../defaultOptions';
-import type EditorStore from '../../EditorStore';
-import { EditorContext } from '../../EditorStore';
-import { useSelector } from '../../zustand/hooks';
-import { getLang } from '../../selector/setting';
+import type EditorStore from '../../zustand/EditorStore';
+import { EditorContext } from '../../zustand/EditorStore';
+import { useLanguage } from '../../zustand/hooks';
 import type { CellSpacing, Options, RenderOptions } from '../../types';
 
 import { normalizeCellSpacing } from '../../utils/getCellSpacing';
@@ -66,7 +65,7 @@ export const useUiTranslator = (): {
  * @returns the current language
  */
 export const useLang = () => {
-  return useSelector(getLang);
+  return useLanguage() ?? 'en';
 };
 
 /**
