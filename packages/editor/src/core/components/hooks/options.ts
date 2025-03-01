@@ -4,7 +4,7 @@ import deepEquals from '../../utils/deepEquals';
 import { DEFAULT_OPTIONS } from '../../defaultOptions';
 import type EditorStore from '../../EditorStore';
 import { EditorContext } from '../../EditorStore';
-import { useSelector } from '../../reduxConnect';
+import { useSelector } from '../../zustand/hooks';
 import { getLang } from '../../selector/setting';
 import type { CellSpacing, Options, RenderOptions } from '../../types';
 
@@ -17,7 +17,7 @@ import {
 } from './renderOptions';
 
 /**
- * @returns the store object of the current editor. Contains the redux store.
+ * @returns the store object of the current editor. Contains the Zustand store.
  */
 
 export const useEditorStore = () =>

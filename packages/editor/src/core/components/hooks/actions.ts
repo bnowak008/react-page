@@ -1,21 +1,25 @@
 import { useCallback } from 'react';
-import { redo, undo } from '../../actions/undo';
-import { useDispatch, useSelector } from '../../reduxConnect';
+// Remove Redux imports
+// import { redo, undo } from '../../actions/undo';
+// import { useDispatch, useSelector } from '../../reduxConnect';
+
+// Import Zustand hooks
+import { useUndo as useZustandUndo, useRedo as useZustandRedo, useSelector } from '../../zustand/hooks';
 
 /**
  * @returns function, that undos last change if called
  */
 export const useUndo = () => {
-  const dispatch = useDispatch();
-  return useCallback(() => dispatch(undo()), [dispatch]);
+  // Use Zustand hook directly
+  return useZustandUndo();
 };
 
 /**
  * @returns function, that redos last change if called
  */
 export const useRedo = () => {
-  const dispatch = useDispatch();
-  return useCallback(() => dispatch(redo()), [dispatch]);
+  // Use Zustand hook directly
+  return useZustandRedo();
 };
 
 /**

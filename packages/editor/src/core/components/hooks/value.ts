@@ -1,4 +1,4 @@
-import { useSelector } from '../../reduxConnect';
+import { useSelector } from '../../zustand/hooks';
 
 import { currentValue } from '../../selector/editable';
 import type { Value } from '../../types/node';
@@ -11,5 +11,5 @@ type ValueSelector<T> = (node: Value | null) => T;
  * @returns the selection T
  */
 export const useValueNode = <T>(selector: ValueSelector<T>) => {
-  return useSelector((state) => selector(currentValue(state)), deepEquals);
+  return useSelector((state) => selector(state.reactPage.values.present));
 };

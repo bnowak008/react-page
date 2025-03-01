@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { HoverTarget } from '../../service/hover/computeHover';
 import type { PositionEnum } from '../../const';
-import { useSelector } from '../../reduxConnect';
+import { useSelector } from '../../zustand/hooks';
 import { findNodeInState } from '../../selector/editable';
 import type { Cell, CellDrag, Node, Row } from '../../types/node';
 import { isRow } from '../../types/node';
@@ -35,16 +35,23 @@ export const useNodeProps = <T>(
   nodeId: string | null,
   selector: NodeSelector<T>
 ): T => {
-  const node = useSelector((state) => {
-    const result = nodeId ? findNodeInState(state, nodeId) : null;
-
-    if (!result) {
+  const result = useSelector((state) => {
+    const nodeResult = nodeId ? findNodeInState(state, nodeId) : null;
+    if (!nodeResult) {
       return selector(null, []);
     }
-    return selector(result.node, result.ancestors);
-  }, deepEquals);
+    return selector(nodeResult.node, nodeResult.ancestors);
+  });
 
-  return node;
+  const prevResultRef = useRef(result);
+  const finalResult = useMemo(() => {
+    if (!deepEquals(prevResultRef.current, result)) {
+      prevResultRef.current = result;
+    }
+    return prevResultRef.current;
+  }, [result]);
+
+  return finalResult;
 };
 
 /**
@@ -417,3 +424,4 @@ export const useDebouncedCellData = (nodeId: string) => {
 
   return [currentData, onChange] as const;
 };
+

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import type { FC, PropsWithChildren } from 'react';
 import React, { useCallback, useEffect } from 'react';
 import { useDndKitDrop } from '../../hooks/useDndKit';
-import { useSelector } from '../../../reduxConnect';
+import { useSelector } from '../../../zustand/hooks';
 import type { RootState } from '../../../types';
 import type { CellDrag } from '../../../types/node';
 import {
@@ -35,7 +35,7 @@ export const useCellDrop = (nodeId: string) => {
   const hoverActions = useHoverActions();
   const dropActions = useDropActions(targetParentNodeId);
   const isHoveringOverThis = useSelector(
-    (state: RootState) => state.reactPage.hover?.nodeId === nodeId
+    (state) => state.reactPage.hover?.nodeId === nodeId
   );
 
   type CollectedProps = {

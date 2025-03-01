@@ -6,9 +6,8 @@ import {
   DISPLAY_MODE_LAYOUT,
   DISPLAY_MODE_PREVIEW,
   DISPLAY_MODE_RESIZING,
-  setMode,
 } from '../../actions/display';
-import { useDispatch, useSelector } from '../../reduxConnect';
+import { useSelector, useSetDisplayMode } from '../../zustand/hooks';
 
 import {
   isEditMode,
@@ -73,13 +72,13 @@ export const useDisplayModeReferenceNodeId = () => {
  * @returns function to set the display mode
  */
 export const useSetMode = () => {
-  const dispatch = useDispatch();
+  const setDisplayMode = useSetDisplayMode();
 
   return useCallback(
     (mode: DisplayModes, referenceNodeId?: string) => {
-      dispatch(setMode(mode, referenceNodeId));
+      setDisplayMode(mode);
     },
-    [dispatch]
+    [setDisplayMode]
   );
 };
 

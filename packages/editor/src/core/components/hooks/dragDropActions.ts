@@ -1,52 +1,83 @@
 import { useMemo } from 'react';
-import {
-  cancelCellDrag,
-  cellHoverAbove,
-  cellHoverBelow,
-  cellHoverInlineLeft,
-  cellHoverInlineRight,
-  cellHoverLeftOf,
-  cellHoverRightOf,
-  clearHover,
-  dragCell,
-} from '../../actions/cell';
-import {
-  insertCellAbove,
-  insertCellBelow,
-  insertCellLeftInline,
-  insertCellLeftOf,
-  insertCellRightInline,
-  insertCellRightOf,
-} from '../../actions/cell/insert';
-import { useDispatch } from '../../reduxConnect';
 import type { HoverInsertActions } from '../../types/hover';
 import { useAllCellPluginsForNode } from './node';
 import { useLang } from './options';
+import { useUpdateValue, useSetHover } from '../../zustand/hooks';
+import type { Cell, CellDrag, Node, Value, Row } from '../../types/node';
+import { cloneWithNewIds } from '../../utils/cloneWithNewIds';
 
 /**
  * @returns object of actions for hovering
  */
 export const useHoverActions = () => {
-  const dispatch = useDispatch();
+  const setHover = useSetHover();
 
   return useMemo(
     (): HoverInsertActions => ({
-      dragCell: (id: string) => dispatch(dragCell(id)),
-      clear: () => dispatch(clearHover()),
-      cancelCellDrag: () => dispatch(cancelCellDrag()),
+      dragCell: (id: string) => {
+        setHover({
+          nodeId: id,
+          position: null,
+          dragMode: true
+        });
+      },
+      clear: () => setHover(null),
+      cancelCellDrag: () => setHover(null),
 
-      above: (drag, hover, options) =>
-        dispatch(cellHoverAbove(drag, hover, options?.level)),
-      below: (drag, hover, options) =>
-        dispatch(cellHoverBelow(drag, hover, options?.level)),
-      leftOf: (drag, hover, options) =>
-        dispatch(cellHoverLeftOf(drag, hover, options?.level)),
-      rightOf: (drag, hover, options) =>
-        dispatch(cellHoverRightOf(drag, hover, options?.level)),
-      inlineLeft: (drag, hover) => dispatch(cellHoverInlineLeft(drag, hover)),
-      inlineRight: (drag, hover) => dispatch(cellHoverInlineRight(drag, hover)),
+      above: (drag, hover, options) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'above',
+          level: options?.level,
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
+      below: (drag, hover, options) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'below',
+          level: options?.level,
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
+      leftOf: (drag, hover, options) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'left-of',
+          level: options?.level,
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
+      rightOf: (drag, hover, options) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'right-of',
+          level: options?.level,
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
+      inlineLeft: (drag, hover) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'inline-left',
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
+      inlineRight: (drag, hover) => {
+        setHover({
+          nodeId: hover.id,
+          position: 'inline-right',
+          dragMode: false,
+          ancestorIds: hover.ancestorIds
+        });
+      },
     }),
-    [dispatch]
+    [setHover]
   );
 };
 
@@ -55,29 +86,174 @@ export const useHoverActions = () => {
  * @returns object of actions for dropping a cell
  */
 export const useDropActions = (parentNodeId?: string | null) => {
-  const dispatch = useDispatch();
+  const updateValue = useUpdateValue();
+  const setHover = useSetHover();
 
   const lang = useLang();
   const cellPlugins = useAllCellPluginsForNode(parentNodeId);
 
   return useMemo(
     (): HoverInsertActions => ({
-      above: (drag, hover, level) =>
-        dispatch(insertCellAbove({ cellPlugins, lang })(drag, hover, level)),
-      below: (drag, hover, level) =>
-        dispatch(insertCellBelow({ cellPlugins, lang })(drag, hover, level)),
-      leftOf: (drag, hover, level) =>
-        dispatch(insertCellLeftOf({ cellPlugins, lang })(drag, hover, level)),
-      rightOf: (drag, hover, level) =>
-        dispatch(insertCellRightOf({ cellPlugins, lang })(drag, hover, level)),
-      inlineLeft: (drag, hover) =>
-        dispatch(insertCellLeftInline({ cellPlugins, lang })(drag, hover)),
-      inlineRight: (drag, hover) =>
-        dispatch(insertCellRightInline({ cellPlugins, lang })(drag, hover)),
-      dragCell: (id: string) => dispatch(dragCell(id)),
-      clear: () => dispatch(clearHover()),
-      cancelCellDrag: () => dispatch(cancelCellDrag()),
+      above: (drag, hover, level) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          
+          // Insert the new cell above the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      below: (drag, hover, level) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          
+          // Insert the new cell below the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex + 1, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      leftOf: (drag, hover, level) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          
+          // Insert the new cell to the left of the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      rightOf: (drag, hover, level) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          
+          // Insert the new cell to the right of the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex + 1, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      inlineLeft: (drag, hover) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          newCell.inline = 'left';
+          
+          // Insert the new cell to the left of the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      inlineRight: (drag, hover) => {
+        updateValue((value: Value | null) => {
+          if (!value || !drag.cell) return value;
+          
+          // Find the row containing the target cell
+          const targetRow = findRowContainingCell(value, hover.id);
+          if (!targetRow) return value;
+          
+          // Clone the dragged cell with new IDs
+          const newCell = cloneWithNewIds(drag.cell as Cell);
+          newCell.inline = 'right';
+          
+          // Insert the new cell to the right of the target cell
+          const cellIndex = targetRow.cells.findIndex(cell => cell.id === hover.id);
+          if (cellIndex >= 0) {
+            targetRow.cells.splice(cellIndex + 1, 0, newCell);
+          }
+          
+          return value;
+        });
+        setHover(null);
+      },
+      dragCell: (id: string) => {
+        setHover({
+          nodeId: id,
+          position: null,
+          dragMode: true
+        });
+      },
+      clear: () => setHover(null),
+      cancelCellDrag: () => setHover(null),
     }),
-    [dispatch, lang, cellPlugins]
+    [updateValue, setHover, lang, cellPlugins]
   );
+};
+
+// Helper function to find a row containing a specific cell
+const findRowContainingCell = (value: Value, cellId: string): Row | undefined => {
+  for (const row of value.rows) {
+    if (row.cells.some(cell => cell.id === cellId)) {
+      return row;
+    }
+    
+    // Check nested rows
+    for (const cell of row.cells) {
+      if (cell.rows) {
+        for (const nestedRow of cell.rows) {
+          if (nestedRow.cells.some(nestedCell => nestedCell.id === cellId)) {
+            return nestedRow;
+          }
+        }
+      }
+    }
+  }
+  
+  return undefined;
 };

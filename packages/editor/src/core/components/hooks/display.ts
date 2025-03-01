@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 
-import { useDispatch, useSelector } from '../../reduxConnect';
-import { setZoom } from '../../actions/display';
+import { useSelector, useSetDisplayZoom } from '../../zustand/hooks';
 import { useOption } from './options';
 
 export const useSetZoom = () => {
-  const dispatch = useDispatch();
-  return useCallback((zoom: number) => dispatch(setZoom(zoom)), [dispatch]);
+  return useSetDisplayZoom();
 };
 
 /**

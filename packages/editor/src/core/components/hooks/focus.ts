@@ -1,6 +1,6 @@
 import type { EffectCallback, DependencyList } from 'react';
 import { useEffect } from 'react';
-import { useSelector } from '../../reduxConnect';
+import { useSelector } from '../../zustand/hooks';
 
 import {
   allFocusedNodeIds,
