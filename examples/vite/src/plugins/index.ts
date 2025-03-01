@@ -1,31 +1,39 @@
 // The background plugin
-import background, { ModeEnum } from '../../../../packages/plugins/layout/background';
+import backgroundFactory, { ModeEnum } from '../../../../packages/plugins/layout/background';
 // import css as well. currently, we caannot do this here in the demo project and have moved that to _app.tsx
 // see https://github.com/vercel/next.js/issues/19717
-// import '@react-page/plugins-background/lib/index.css';
 
 // The divider plugin
 import divider from '../../../../packages/plugins/content/divider';
 
 // The html5-video plugin
-import html5video from '../../../../packages/plugins/content/html5-video';
-// import '@react-page/plugins-html5-video/lib/index.css';
+import html5video from '../../../../packages/plugins/content/video';
 
 // The image plugin
-import type { ImageUploadType } from '../../../../packages/plugins/content/image';
-import { imagePlugin } from '../../../../packages/plugins/content/image';
+import { imagePlugin as imagePluginFactory, type ImageUploadType } from '../../../../packages/plugins/content/image';
 // import '@react-page/plugins-image/lib/index.css';
 
 // The spacer plugin
-import spacer from '../../../../packages/plugins/content/spacer';
+import spacerFactory from '../../../../packages/plugins/content/spacer/src';
 // import '@react-page/plugins-spacer/lib/index.css';
 
 // The video plugin
-import video from '../../../../packages/plugins/content/video';
+import videoFactory from '../../../../packages/plugins/content/video/src';
 // import '@react-page/plugins-video/lib/index.css';
 
+// Import the slate plugin - use the source version with the correct export
+import slatePluginFactory, { DEFAULT_SLATE_PLUGIN_ID } from '../../../../packages/plugins/content/slate/src';
+// Create the slate plugin with the correct ID
+const slatePlugin = slatePluginFactory();
+// Import the CSS
+import '../../../../packages/plugins/content/slate/lib/index.css';
+
+// Import custom plugins
+import { codeSnippetPlugin } from './code-snippet';
+import { twitterTimelinePlugin } from './twitter-timeline';
+
 const fakeImageUploadService: (url: string) => ImageUploadType =
-  (_url) => (file, reportProgress) => {
+  (_url) => (file: File, reportProgress: (progress: number) => void) => {
     return new Promise((resolve) => {
       let counter = 0;
       const interval = setInterval(() => {
@@ -42,15 +50,41 @@ const fakeImageUploadService: (url: string) => ImageUploadType =
     });
   };
 
+// Create the image plugin with the correct ID
+const imagePlugin = {
+  ...imagePluginFactory({ imageUpload: fakeImageUploadService('/images/react.png') }),
+  id: 'ory/editor/core/content/image'
+};
+
+// Create the spacer plugin with the correct ID
+const spacer = {
+  ...spacerFactory,
+  id: 'ory/editor/core/content/spacer'
+};
+
+// Create the video plugin with the correct ID
+const video = {
+  ...videoFactory,
+  id: 'ory/editor/core/content/video'
+};
+
+// Create a background plugin factory with the correct ID
+const background = (options: any) => ({
+  ...backgroundFactory(options),
+  id: 'ory/editor/core/layout/background'
+});
+
 // Define which plugins we want to use.
 
 export const cellPlugins = [
+  slatePlugin,
   spacer,
-  imagePlugin({ imageUpload: fakeImageUploadService('/images/react.png') }),
+  imagePlugin,
   video,
+  codeSnippetPlugin,
+  twitterTimelinePlugin,
   divider,
   html5video,
-  // Comment out the background plugin to avoid the lazyLoad issue
   background({
     imageUpload: fakeImageUploadService('/images/sea-bg.jpg'),
     enabledModes:

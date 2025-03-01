@@ -40,3 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Add custom styles for nested paragraphs to fix DOM nesting warnings */
+/* This is a more aggressive fix that changes the display of nested paragraphs */
+p p {
+  display: inline-block !important; /* Force inline display to avoid nesting issues */
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: inherit !important;
+  font-style: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-family: inherit !important;
+  color: inherit !important;
+}
+
+/* Additional fix for specific Slate editor paragraphs */
+[data-slate-editor] p p {
+  display: inline !important;
+}

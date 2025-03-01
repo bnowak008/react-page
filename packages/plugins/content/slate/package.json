@@ -1,10 +1,10 @@
 {
   "name": "@react-page/plugins-slate",
   "version": "0.0.0",
-  "main": "./lib/index.js",
-  "module": "./lib-es/index.js",
+  "main": "./src/index.tsx",
+  "module": "./src/index.tsx",
   "sideEffects": false,
-  "typings": "./lib/index.d.ts",
+  "typings": "./src/index.tsx",
   "author": "ORY GmbH",
   "license": "MIT",
   "repository": {

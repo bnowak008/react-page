@@ -73,15 +73,22 @@ export const useRenderElement = (
           style,
         };
 
-        if (typeof Component === 'string' || Component instanceof String) {
+        // Check if this is a paragraph and if it might be nested
+        const isParagraph = typeof Component === 'string' && Component === 'p';
+        const mightBeNested = isParagraph && document.querySelector('p p');
+
+        // If it's a paragraph that might be nested, use a span instead
+        const SafeComponent = isParagraph && mightBeNested ? 'span' : Component;
+
+        if (typeof SafeComponent === 'string' || SafeComponent instanceof String) {
           const nativePropsInData = pickNativeProps(data as Data);
           // simple component like "p"
           return (
-            <Component {...attributes} {...baseProps} {...nativePropsInData} />
+            <SafeComponent {...attributes} {...baseProps} {...nativePropsInData} />
           );
         }
 
-        Component.displayName = 'SlatePlugin(' + matchingPlugin.type + ')';
+        SafeComponent.displayName = 'SlatePlugin(' + matchingPlugin.type + ')';
         // usefull in certain cases
         const additionalProps = {
           childNodes,
@@ -92,7 +99,7 @@ export const useRenderElement = (
           ...injections,
         };
         const component = (
-          <Component
+          <SafeComponent
             {...baseProps}
             {...data}
             // attributes have to be spread in manually because of ref problem

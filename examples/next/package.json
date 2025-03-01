@@ -5,7 +5,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export -o build && touch build/.nojekyll",
+    "build:old": "next build && next export -o build && touch build/.nojekyll",
     "start": "next start"
   },
   "peerDependencies": {
