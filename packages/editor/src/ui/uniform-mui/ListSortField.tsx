@@ -21,6 +21,7 @@ export type ListSortFieldProps = FieldProps<
     iconDown?: ReactNode;
     dragIcon?: ReactNode;
     handleMove: (fromIndex: number, toIndex: number) => void;
+    dragHandleProps?: Record<string, any>;
   }
 >;
 
@@ -32,6 +33,7 @@ function ListSort({
   handleMove,
   name,
   readOnly,
+  dragHandleProps,
   ...props
 }: ListSortFieldProps) {
   const nameParts = joinName(null, name);
@@ -55,6 +57,7 @@ function ListSort({
         disabled={(parent.value ?? []).length < 2}
         size="large"
         sx={{ padding: 0 }}
+        {...dragHandleProps}
       >
         {dragIcon}
       </IconButton>

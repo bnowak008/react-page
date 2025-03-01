@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { lazy, Suspense, ComponentType } from 'react';
 import type { ImageSettings } from '../types/settings';
+
 import { lazyLoad } from '@react-page/editor';
+
 const Panorama = lazyLoad(() => import('@mui/icons-material/Panorama'));
 
 export const defaultTranslations = {

@@ -7,20 +7,19 @@ import ListItemMaterial from '@mui/material/ListItem';
 import Stack from '@mui/material/Stack';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 
-import { useDrag, useDrop } from 'react-dnd';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { connectField, joinName, useField } from 'uniforms';
 
 import AutoField from './AutoField';
 import ListDelField from './ListDelField';
 import ListSortField from './ListSortField';
 
-export enum DragItemType {
-  ListItemField = 'ListItemField',
-}
+const SORTABLE_TYPE = 'ListItemField';
 
-interface DragItem {
-  name: string;
-  originalIndex: number;
+interface SortableItem {
+  id: string;
+  index: number;
 }
 
 export type ListItemFieldProps = {
@@ -67,25 +66,27 @@ function ListItem({
     parent.onChange(value);
   };
 
-  const [, drag] = useDrag<DragItem, unknown>(
-    () => ({
-      type: DragItemType.ListItemField,
-      item: { name, originalIndex: nameIndex } as DragItem,
-    }),
-    [value, nameIndex, moveItem]
-  );
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: name || '',
+    data: {
+      index: nameIndex,
+      type: SORTABLE_TYPE,
+    },
+    disabled: disableSortable ?? (parent.value ?? []).length < 2,
+  });
 
-  const [, drop] = useDrop(
-    () => ({
-      accept: DragItemType.ListItemField,
-      drop: (draggedItem: DragItem, monitor) => {
-        const didDrop = monitor.canDrop();
-        if (didDrop && draggedItem.name !== name)
-          moveItem(draggedItem.originalIndex, nameIndex);
-      },
-    }),
-    [moveItem]
-  );
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
 
   const disableSort = disableSortable ?? (parent.value ?? []).length < 2;
 
@@ -94,7 +95,8 @@ function ListItem({
       dense={dense}
       disableGutters={disableGutters}
       divider={divider}
-      ref={(node) => (disableSort ? null : drag(drop(node)))}
+      ref={setNodeRef}
+      style={style}
       sx={{ gap: '0.5rem' }}
     >
       <ListSortField
@@ -104,6 +106,7 @@ function ListItem({
         handleMove={moveItem}
         dragIcon={dragIcon}
         disabled={disableSort}
+        dragHandleProps={{ ...attributes, ...listeners }}
       />
 
       {children}

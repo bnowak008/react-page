@@ -1,0 +1,124 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# React-page - Modern WYSIWYG Editor for React
+
+## Project Overview
+React-page is a modern, extensible and feature-rich WYSIWYG editor for React applications. It provides a flexible content editing experience that goes beyond the limitations of traditional `contenteditable` implementations. The project is structured as a monorepo using Lerna, with multiple packages that can be used together or independently.
+
+## Development Rules
+
+### Performance
+- Implement code splitting for editor UI components
+- Optimize bundle sizes using proper tree-shaking
+- Use lazy loading for plugins and editor UI
+- Implement proper caching strategies for content
+- Minimize re-renders using React best practices
+- Use React.memo and useMemo where appropriate
+
+### Code Quality
+- Follow TypeScript best practices
+- Write unit tests for core functionality
+- Maintain consistent code style using ESLint and Prettier
+- Use semantic versioning for releases
+- Document public APIs with JSDoc comments
+
+### File Management Rules
+- Update package.json with proper versioning
+- Maintain clean dependency tree
+- Keep configuration files up to date
+- Follow consistent file naming conventions:
+  - React components: PascalCase
+  - Utility functions: camelCase
+  - Test files: ComponentName.test.tsx
+- Organize imports consistently
+
+### Git Workflow
+- Use semantic commit messages following Angular convention
+- Create feature branches for new features
+- Submit pull requests for code review
+- Ensure tests pass before merging
+
+## Context Files
+.cursor/context.md - Project context and documentation
+- Current project state
+- Architecture decisions
+- Technology stack details
+- Implementation status
+- Package relationships
+- Development workflow
+
+.cursor/todos/[{task_name}].md - Task management and tracking
+
+Each todo file should follow the format:
+```md
+# [Category] Todo List
+
+## Description
+Detailed description of this todo category's purpose, including:
+- ALWAYS USE CHECKBOXES
+- What types of tasks belong here
+- How tasks should be tracked
+- When and how to update this file
+- How this category relates to the project
+- Any specific guidelines or requirements
+- Any relevant context about the status of the tasks implementation
+- No pseudo code or implementations. Only detailed steps on how to acheive such things.
+
+## Memory Section Guidelines
+- ALWAYS maintain the Memory section in each todo file
+- UPDATE the Memory section when:
+  - Making significant implementation decisions
+  - Overcoming technical challenges
+  - Discovering future considerations
+  - Gaining new technical insights
+  - Adding or modifying dependencies
+- ENSURE the Memory section:
+  - Provides clear context for future development
+  - Documents rationale behind decisions
+  - Tracks evolution of implementation
+  - Records lessons learned
+  - Notes potential improvements
+- USE the Memory section to:
+  - Aid in knowledge transfer
+  - Support maintenance decisions
+  - Guide future enhancements
+  - Prevent repeated mistakes
+  - Maintain implementation context
+
+## Active
+- [ ] High priority tasks
+- [ ] Current sprint tasks
+- [ ] In-progress items
+
+## Pending
+- [ ] Upcoming tasks
+- [ ] Planned improvements
+- [ ] Future considerations
+
+## Completed
+- [x] Finished tasks (with completion date)
+- [x] Resolved items
+- [x] Implemented features
+```
+## Project Context Management
+- ALWAYS read and consider @context.md before making any changes
+- If the user references any .cursor/todos/*.md ALWAYS read and consider them before making changes
+- AUTOMATICALLY update @context.md when:
+  - New dependencies are added or removed
+  - Project structure changes
+  - Features are implemented or modified
+  - Architecture decisions are made
+  - Development status changes
+- AUTOMATICALLY update relevant todo files in .cursor/todos/ when:
+  - Tasks are completed or change status
+  - New tasks are identified
+  - Implementation status changes
+  - Technical debt is discovered
+- MAINTAIN separate todo files for different tasks:
+  - .cursor/todos/editor-features.md - Editor core features
+  - .cursor/todos/plugins.md - Plugin development tasks
+  - .cursor/todos/documentation.md - Documentation tasks
+  - .cursor/todos/performance.md - Performance optimization tasks

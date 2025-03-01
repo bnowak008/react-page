@@ -1,5 +1,4 @@
 import throttle from 'lodash.throttle';
-import type { DropTargetMonitor } from 'react-dnd';
 import { delay } from '../../../../helper/throttle';
 import type { HoverTarget } from '../../../../service/hover/computeHover';
 import {
@@ -12,6 +11,13 @@ import type {
   HoverInsertActions,
   CellPluginList,
 } from '../../../../types';
+
+// Define DndMonitor type here instead of importing it
+export type DndMonitor = {
+  getItem: () => any;
+  isOver: (options?: { shallow?: boolean }) => boolean;
+  didDrop: () => boolean;
+};
 
 let last: { hoverId?: string; dragId?: string } = { hoverId: '', dragId: '' };
 
@@ -29,7 +35,7 @@ const shouldClear = (
 export const onHover = throttle(
   (
     target: HoverTarget,
-    monitor: DropTargetMonitor,
+    monitor: DndMonitor,
     element: HTMLElement,
     actions: HoverInsertActions,
     cellPlugins: CellPluginList
@@ -62,10 +68,33 @@ export const onHover = throttle(
 
     last = { hoverId: target.id, dragId: drag.cell.id };
 
+    // Create a mock DragOverEvent from the monitor
+    const mockEvent = {
+      active: {
+        id: drag.cell.id,
+        rect: {
+          current: {
+            initial: {
+              left: 0,
+              top: 0
+            },
+            translated: null
+          }
+        }
+      },
+      over: {
+        id: target.id,
+        rect: {
+          left: 0,
+          top: 0
+        }
+      }
+    };
+
     computeAndDispatchHover(
       target,
       drag.cell,
-      monitor,
+      mockEvent as any,
       element,
       actions,
       cellPlugins
@@ -77,13 +106,13 @@ export const onHover = throttle(
 
 export const onDrop = (
   target: HoverTarget,
-  monitor: DropTargetMonitor,
+  monitor: DndMonitor,
   element: HTMLElement,
   actions: HoverInsertActions,
   cellPlugins: CellPluginList
 ) => {
   const drag: CellDrag = monitor.getItem();
-  if (!drag.cell) return;
+  if (!drag?.cell) return;
   if (monitor.didDrop() || !monitor.isOver({ shallow: true }) || !target) {
     // If the item drop occurred deeper down the tree, don't do anything
     return;
@@ -103,10 +132,33 @@ export const onDrop = (
 
   last = { hoverId: target.id, dragId: drag.cell.id };
 
+  // Create a mock DragOverEvent from the monitor
+  const mockEvent = {
+    active: {
+      id: drag.cell.id,
+      rect: {
+        current: {
+          initial: {
+            left: 0,
+            top: 0
+          },
+          translated: null
+        }
+      }
+    },
+    over: {
+      id: target.id,
+      rect: {
+        left: 0,
+        top: 0
+      }
+    }
+  };
+
   computeAndDispatchInsert(
     target,
     drag.cell,
-    monitor,
+    mockEvent as any,
     element,
     actions,
     cellPlugins

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { FC, PropsWithChildren } from 'react';
 import React from 'react';
-import { DragPreviewImage, useDrag } from 'react-dnd';
+import { useDndKitDrag } from '../../../core/components/hooks/useDndKit';
 
 import { dragIcon } from '../../../core/components/Cell/Draggable/useDragHandle';
 import { useSetLayoutMode } from '../../../core/components/hooks/displayMode';
@@ -14,13 +14,7 @@ const Draggable: FC<
   }>
 > = ({ insert, children }) => {
   const setLayoutMode = useSetLayoutMode();
-  const [{ isDragging }, dragRef, preview] = useDrag<
-    CellDrag,
-    void,
-    {
-      isDragging: boolean;
-    }
-  >({
+  const [{ isDragging }, dragRef, _, { attributes, listeners, style }] = useDndKitDrag<CellDrag>({
     type: 'cell',
     item: () => {
       setLayoutMode();
@@ -28,8 +22,8 @@ const Draggable: FC<
         cell: insert,
       };
     },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+    collect: (isDragging) => ({
+      isDragging,
     }),
   });
   const classes = classNames(
@@ -38,8 +32,13 @@ const Draggable: FC<
   );
 
   return (
-    <div className={classes} ref={dragRef}>
-      <DragPreviewImage connect={preview} src={dragIcon} />
+    <div 
+      className={classes} 
+      ref={dragRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       {children}
     </div>
   );

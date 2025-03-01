@@ -1,4 +1,4 @@
-import { useDrag, DragPreviewImage } from 'react-dnd';
+import { useDndKitDrag } from '../../hooks/useDndKit';
 import type { CellDrag } from '../../../types';
 import { useCell, useHoverActions } from '../../hooks';
 import React from 'react';
@@ -9,25 +9,19 @@ export const dragIcon =
 export const useDragHandle = (nodeId: string, enabled = true) => {
   const actions = useHoverActions();
   const cell = useCell(nodeId);
-  const [{ isDragging }, dragRef, preview] = useDrag<
-    CellDrag,
-    void,
-    {
-      isDragging: boolean;
-    }
-  >({
+  
+  const [{ isDragging }, dragRef, previewElement, { handleDragStart, handleDragEnd, handleDragCancel }] = useDndKitDrag<CellDrag>({
+    type: 'cell',
     canDrag: enabled,
     item: () => {
       actions.dragCell(nodeId);
       return { cell };
     },
-    type: 'cell',
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+    collect: (isDragging) => ({
+      isDragging,
     }),
-
-    end(item, monitor) {
-      if (monitor.didDrop()) {
+    end(item, didDrop) {
+      if (didDrop) {
         // If the item drop occurred deeper down the tree, don't do anything
         return;
       }
@@ -35,6 +29,7 @@ export const useDragHandle = (nodeId: string, enabled = true) => {
       actions.cancelCellDrag();
     },
   });
-  const previewElement = <DragPreviewImage connect={preview} src={dragIcon} />;
+  
+  // We'll handle the preview element in the DndKitProvider
   return [isDragging, dragRef, previewElement] as const;
 };

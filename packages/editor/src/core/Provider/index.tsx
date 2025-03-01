@@ -1,6 +1,6 @@
 import type { FC, PropsWithChildren } from 'react';
 import React from 'react';
-import DndProvider from './DndProvider';
+import DndKitProvider from './DndKitProvider';
 import BlurGate from '../components/BlurGate';
 import type {
   Callbacks,
@@ -36,13 +36,13 @@ const Provider: FC<PropsWithChildren<ProviderProps>> = ({
     <OptionsProvider {...options}>
       <RenderOptionsProvider {...renderOptions}>
         <CallbacksProvider {...callbacks}>
-          <DndProvider>
+          <DndKitProvider>
             <EditorStoreProvider lang={lang} value={value}>
               <ThemeProvider theme={options.uiTheme || DEFAULT_OPTIONS.uiTheme}>
                 <BlurGate>{children}</BlurGate>
               </ThemeProvider>
             </EditorStoreProvider>
-          </DndProvider>
+          </DndKitProvider>
         </CallbacksProvider>
       </RenderOptionsProvider>
     </OptionsProvider>

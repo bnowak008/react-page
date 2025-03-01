@@ -1,5 +1,4 @@
 import { useCallback } from 'react';
-import { useDrop } from 'react-dnd';
 import { getCommonAncestorTree } from '../../utils/ancestorTree';
 import { blurAllCells } from '../../actions/cell';
 import type { FocusMode } from '../../actions/cell/core';
@@ -27,6 +26,8 @@ import { useEditorStore, useLang } from './options';
 import { cloneWithNewIds } from '../../../core/utils/cloneWithNewIds';
 import { useDisplayModeReferenceNodeId } from './displayMode';
 import type { CellPluginOnChangeOptions } from '../../types';
+import type { CellDrag as CustomCellDrag } from '../../types';
+import { useDndKitDrop } from './useDndKit';
 
 /**
  * @param id id of a node
@@ -307,19 +308,14 @@ export const useInsertNew = (parentCellId?: string) => {
  */
 export const useTrashDrop = () => {
   const removeCell = useRemoveCellById();
-  return useDrop<
-    CellDrag,
-    void,
-    {
-      isHovering: boolean;
-    }
-  >({
+
+  return useDndKitDrop({
     accept: 'cell',
     collect: (monitor) => ({
       isHovering: monitor.isOver({ shallow: true }),
     }),
     drop: (item, monitor) => {
-      if (item.cell) {
+      if (item?.cell) {
         removeCell(item.cell.id);
       }
     },

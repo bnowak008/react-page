@@ -1,5 +1,5 @@
-import React from 'react';
-import { useDrop } from 'react-dnd';
+import React, { useRef, useEffect } from 'react';
+import { useDndKitDrop } from '../hooks/useDndKit';
 import type { CellDrag } from '../../types';
 import {
   useCellIsAllowedHere,
@@ -17,40 +17,45 @@ export interface InsertNewProps {
 
 const InsertNew: React.FC<InsertNewProps> = ({ parentCellId }) => {
   const setInsertMode = useSetInsertMode();
-
   const insertNew = useInsertNew(parentCellId);
-
   const isPreviewMode = useIsPreviewMode();
   const isLayoutMode = useIsLayoutMode();
-
   const setReferenceNodeId = useSetDisplayReferenceNodeId();
   const checkIfAllowed = useCellIsAllowedHere(parentCellId);
+  const divRef = useRef<HTMLDivElement>(null);
 
-  const [{ isOver, isAllowed }, dropRef] = useDrop<
-    CellDrag,
-    void,
-    { isOver: boolean; isAllowed: boolean }
-  >({
+  type CollectedProps = {
+    isOver: boolean;
+    isAllowed: boolean;
+  };
+
+  const [collected, dropRef] = useDndKitDrop<CellDrag, CollectedProps>({
     accept: 'cell',
-    canDrop: (item) => {
-      return checkIfAllowed(item);
-    },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
-      isAllowed: checkIfAllowed(monitor.getItem()),
+      isAllowed: checkIfAllowed(monitor.getItem() || { cell: null }),
     }),
     drop: (item, monitor) => {
       // fallback drop
-      if (!monitor.didDrop() && item.cell) {
+      if (!monitor.didDrop() && item?.cell) {
         insertNew(item.cell);
       }
     },
   });
 
+  const { isOver, isAllowed } = collected;
+
+  // Connect the drop ref to our div ref
+  useEffect(() => {
+    if (divRef.current) {
+      dropRef(divRef.current);
+    }
+  }, [dropRef]);
+
   if (isPreviewMode) return null;
   return (
     <div
-      ref={dropRef}
+      ref={divRef}
       className={
         'react-page-cell-insert-new' + (isOver && isAllowed ? ' hover' : '')
       }

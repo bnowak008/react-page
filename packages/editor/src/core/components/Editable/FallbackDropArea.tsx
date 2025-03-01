@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import type { BaseSyntheticEvent, FC, PropsWithChildren } from 'react';
 import { useCallback } from 'react';
-import { useDrop } from 'react-dnd';
+import { useDndKitDrop } from '../hooks/useDndKit';
 import type { CellDrag } from '../../types/node';
 
 import {
@@ -12,18 +12,26 @@ import {
 
 const FallbackDropArea: FC<PropsWithChildren> = ({ children }) => {
   const insertNew = useInsertNew();
-
   const isAllowed = useCellIsAllowedHere();
-  const [, dropRef] = useDrop<CellDrag, void, void>({
+  const divRef = useRef<HTMLDivElement>(null);
+  
+  const [collected, dropRef] = useDndKitDrop<CellDrag, {}>({
     accept: 'cell',
-    canDrop: (item) => isAllowed(item),
+    collect: () => ({}),
     drop: (item, monitor) => {
       // fallback drop
-      if (!monitor.didDrop() && item.cell) {
+      if (!monitor.didDrop() && item?.cell) {
         insertNew(item.cell);
       }
     },
   });
+
+  // Connect the drop ref to our div ref
+  useEffect(() => {
+    if (divRef.current) {
+      dropRef(divRef.current);
+    }
+  }, [dropRef]);
 
   const setReference = useSetDisplayReferenceNodeId();
   const clearReference = useCallback(
@@ -36,7 +44,7 @@ const FallbackDropArea: FC<PropsWithChildren> = ({ children }) => {
   );
 
   return (
-    <div ref={dropRef} onClick={clearReference}>
+    <div ref={divRef} onClick={clearReference}>
       {children}
     </div>
   );

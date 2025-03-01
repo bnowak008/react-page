@@ -4,9 +4,15 @@ import classNames from 'classnames';
 import React from 'react';
 import { useIsLayoutMode, useTrashDrop } from '../../core/components/hooks';
 
+interface CollectedProps {
+  isHovering: boolean;
+}
+
 export const Trash: React.FC = React.memo(() => {
   const isLayoutMode = useIsLayoutMode();
-  const [{ isHovering }, ref] = useTrashDrop();
+  const [collected, ref] = useTrashDrop();
+  const isHovering = (collected as CollectedProps)?.isHovering || false;
+  
   return (
     <div
       ref={ref}

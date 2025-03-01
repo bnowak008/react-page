@@ -1,4 +1,3 @@
-import type { BackendFactory } from 'dnd-core';
 import type { FC, PropsWithChildren } from 'react';
 import React from 'react';
 import Editable from '../core/components/Editable';
@@ -7,10 +6,11 @@ import { createEmptyState } from '../core/EditorStore';
 import type { ProviderProps } from '../core/Provider';
 import Provider from '../core/Provider';
 import type { ValueWithLegacy } from '../core/types';
+import type { DndBackendFactory } from '../core/types/options';
 import EditorUI from '../ui/EditorUI';
 import StickyWrapper from './StickyWrapper';
 
-export type DndBackend = BackendFactory;
+export type DndBackend = DndBackendFactory;
 export type EditableEditorProps = {
   value?: ValueWithLegacy | null;
 

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { FC, PropsWithChildren } from 'react';
 import React, { useCallback, useEffect } from 'react';
-import { useDrop } from 'react-dnd';
+import { useDndKitDrop } from '../../hooks/useDndKit';
 import { useSelector } from '../../../reduxConnect';
 import type { RootState } from '../../../types';
 import type { CellDrag } from '../../../types/node';
@@ -38,64 +38,42 @@ export const useCellDrop = (nodeId: string) => {
     (state: RootState) => state.reactPage.hover?.nodeId === nodeId
   );
 
-  const [{ isOver, isAllowed }, dropRef] = useDrop<
-    CellDrag,
-    void,
-    { isOver: boolean; isAllowed: boolean }
-  >({
+  type CollectedProps = {
+    isOver: boolean;
+    isAllowed: boolean;
+  };
+
+  const [collected, dropRef] = useDndKitDrop<CellDrag, CollectedProps>({
     accept: 'cell',
-    canDrop: (item) => {
-      if (!item.cell) {
-        return false;
-      }
-      // check if plugin is allowed here
-      if (!checkIfAllowed(item)) {
-        return false;
-      }
-      if (plugin?.allowNeighbour) {
-        if (!plugin.allowNeighbour(item.cell)) {
-          return false;
-        }
-      }
-      return (
-        item.cell.id !== nodeId &&
-        !(item.cell.id && hoverTarget?.ancestorIds?.includes(item.cell.id))
-      );
-    },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
-      isAllowed: checkIfAllowed(monitor.getItem()),
+      isAllowed: checkIfAllowed(monitor.getItem() || { cell: null }),
     }),
-    hover(item, monitor) {
-      if (!item.cell || !hoverTarget || !ref.current) {
-        return false;
-      }
-      if (plugin?.allowNeighbour) {
-        if (!plugin.allowNeighbour(item.cell)) {
-          return false;
-        }
-      }
-      onHover(hoverTarget, monitor, ref.current, hoverActions, cellPlugins);
-    },
     drop: (item, monitor) => {
       if (!hoverTarget || !ref.current) {
         return;
       }
-      onDrop(hoverTarget, monitor, ref.current, dropActions, cellPlugins);
+      if (item?.cell) {
+        onDrop(hoverTarget, monitor, ref.current, dropActions, cellPlugins);
+      }
     },
   });
+
+  const { isOver, isAllowed } = collected;
 
   useEffect(() => {
     if (!isOver && isHoveringOverThis) {
       hoverActions.clear();
     }
-  }, [isOver, isHoveringOverThis, hoverActions.clear]);
+  }, [isOver, isHoveringOverThis, hoverActions]);
 
   // see https://github.com/react-dnd/react-dnd/issues/1955
   const attach = useCallback(
     (domElement: HTMLDivElement) => {
-      dropRef(domElement);
-      ref.current = domElement;
+      if (domElement) {
+        dropRef(domElement);
+        ref.current = domElement;
+      }
       // use dom element here for measuring
     },
     [dropRef]

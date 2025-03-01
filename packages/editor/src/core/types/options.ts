@@ -1,11 +1,13 @@
 import type { Theme } from '@mui/material';
-import type { BackendFactory } from 'dnd-core';
 import type { Middleware, Store } from 'redux';
 import type { DisplayModes } from '../actions/display';
 import type { Languages } from '../EditorStore';
 import type { RootState } from '../types';
 import type { Components } from './components';
 import type { ChildConstraints } from './constraints';
+
+// Define our own BackendFactory type
+export type DndBackendFactory = any;
 
 /**
  * This are the options of the editor
@@ -92,9 +94,9 @@ export type Options = {
   uiTranslator?: ((key?: string | null) => string | null) | null;
 
   /**
-   * Use this to override the default html backend for react-dnd
+   * Use this to override the default dnd backend
    */
-  dndBackend?: BackendFactory;
+  dndBackend?: DndBackendFactory;
   /**
    * disable blur all
    */
