@@ -3,9 +3,24 @@ import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import type { Value, ValueWithHistory } from '../types/node';
 import type { Display } from '../types/display';
-import type { Focus } from '../reducer/focus';
-import type { Hover } from '../reducer/hover';
 import type { NodeWithAncestors } from '../types/node';
+import { setAllSizesAndOptimize } from './helpers/setAllSizesAndOptimize';
+import { PositionEnum } from '../const';
+
+// Define Focus and Hover types directly
+export interface Focus {
+  nodeId: string | null;
+  scrollToCell?: boolean;
+  source?: any;
+}
+
+export interface Hover {
+  nodeId: string | null;
+  position?: PositionEnum | null;
+  level?: number;
+  dragMode?: boolean;
+  ancestorIds?: string[];
+}
 
 // Define the state structure to match the Redux state
 export interface ReactPageState {
@@ -27,7 +42,7 @@ export interface RootState {
 // Define the actions that can be performed on the state
 export interface ReactPageActions {
   // Value actions
-  updateValue: (value: Value | null) => void;
+  updateValue: (valueOrUpdater: Value | null | ((value: Value | null) => Value | null)) => void;
   
   // Undo/Redo actions
   undo: () => void;
@@ -71,6 +86,18 @@ export const createInitialState = (value: Value | null, lang: string): RootState
   },
 });
 
+// Helper function to optimize a value
+const optimizeValue = (value: Value | null): Value | null => {
+  if (!value) return null;
+  
+  // Apply optimization in a more efficient way
+  // First optimize the structure, then compute sizes
+  return {
+    ...value,
+    rows: setAllSizesAndOptimize(value.rows || []),
+  };
+};
+
 // Create the Zustand store
 export const createZustandStore = (initialState: RootState) => 
   create<ZustandStore>()(
@@ -80,15 +107,29 @@ export const createZustandStore = (initialState: RootState) =>
           ...initialState,
           
           // Value actions
-          updateValue: (value) => 
+          updateValue: (valueOrUpdater) => 
             set((state) => {
-              if (state.reactPage.values.present !== value) {
+              // Handle both direct values and updater functions
+              const value = typeof valueOrUpdater === 'function' 
+                ? valueOrUpdater(state.reactPage.values.present)
+                : valueOrUpdater;
+              
+              // Optimize the value before storing it
+              const optimizedValue = optimizeValue(value);
+              
+              // Only update if the value has actually changed
+              // This prevents unnecessary re-renders
+              if (JSON.stringify(state.reactPage.values.present) !== JSON.stringify(optimizedValue)) {
                 // Add current value to past for undo
                 state.reactPage.values.past.push(state.reactPage.values.present!);
                 // Clear future when a new action is performed
                 state.reactPage.values.future = [];
-                // Set the new value
-                state.reactPage.values.present = value;
+                // Set the new optimized value
+                state.reactPage.values.present = optimizedValue;
+                
+                // Clear the node cache when the value changes
+                // This ensures that any cached nodes are refreshed with the new optimized structure
+                state.reactPage.__nodeCache = {};
               }
             }),
           

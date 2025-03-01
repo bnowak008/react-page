@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { getCommonAncestorTree } from '../../utils/ancestorTree';
 
-import type { FocusMode } from '../../actions/cell/core';
+import type { FocusMode } from '../../types/focus';
 
 import type { CellDrag, PartialCell, Node, Value, Row, Cell, I18nField } from '../../types/node';
 import { isRow } from '../../types/node';
@@ -22,13 +22,15 @@ import {
   useUpdateValue
 } from '../../zustand/hooks';
 
+import { useValueOptimizer } from '../../zustand';
+
 /**
  * @param id id of a node
  * @returns function, that sets a cell in draft mode (will be invisible in readonly / preview)
  */
 export const useSetDraft = (id: string) => {
   const updateValue = useUpdateValue();
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
   
   return useCallback(
     (isDraft: boolean, lang: string = currentLang) => {
@@ -91,39 +93,111 @@ export const useSetLang = () => {
 };
 
 /**
- *
- * @param id a cell id
- * @returns function to update the data of the given cell. Sets the data in the current language, unless options.lang is set
+ * @param id cell id
+ * @returns function to update the data of the cell with the given id
  */
 export const useUpdateCellData = (id: string) => {
   const updateValue = useUpdateValue();
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
   
   return useCallback(
-    (
-      data: null | { [key: string]: unknown },
-      options: CellPluginOnChangeOptions = {}
-    ) => {
+    (data: { [key: string]: unknown }, options: CellPluginOnChangeOptions = {}) => {
       const lang = options.lang || currentLang;
       
       updateValue((value: Value | null) => {
         if (!value) return value;
-        const cell = value.rows.find((row: Row) => 
-          row.cells.some((cell: Cell) => cell.id === id)
-        )?.cells.find((cell: Cell) => cell.id === id);
         
-        if (cell) {
-          if (!cell.dataI18n) {
-            cell.dataI18n = { [lang]: data as Record<string, unknown> };
-          } else {
-            cell.dataI18n[lang] = data as Record<string, unknown>;
+        // Create a copy of the value to work with
+        const newValue = { ...value };
+        
+        // Find the cell with the given id
+        for (const row of newValue.rows || []) {
+          for (const cell of row.cells || []) {
+            if (cell.id === id) {
+              // Update the cell data
+              if (!cell.dataI18n) {
+                cell.dataI18n = {};
+              }
+              
+              // Ensure the language key exists
+              const langKey = lang as string;
+              if (!cell.dataI18n[langKey]) {
+                cell.dataI18n[langKey] = {};
+              }
+              
+              // Update the data for the specified language
+              cell.dataI18n[langKey] = {
+                ...cell.dataI18n[langKey],
+                ...data,
+              };
+              
+              // Return the updated value
+              return newValue;
+            }
+            
+            // Check nested rows
+            if (cell.rows) {
+              for (const nestedRow of cell.rows) {
+                for (const nestedCell of nestedRow.cells || []) {
+                  if (nestedCell.id === id) {
+                    // Update the cell data
+                    if (!nestedCell.dataI18n) {
+                      nestedCell.dataI18n = {};
+                    }
+                    
+                    // Ensure the language key exists
+                    const langKey = lang as string;
+                    if (!nestedCell.dataI18n[langKey]) {
+                      nestedCell.dataI18n[langKey] = {};
+                    }
+                    
+                    // Update the data for the specified language
+                    nestedCell.dataI18n[langKey] = {
+                      ...nestedCell.dataI18n[langKey],
+                      ...data,
+                    };
+                    
+                    // Return the updated value
+                    return newValue;
+                  }
+                }
+              }
+            }
           }
         }
+        
+        // Cell not found, return the original value
         return value;
       });
     },
-    [updateValue, id, currentLang]
+    [id, updateValue, currentLang]
   );
+};
+
+// Helper function to find a cell by id
+const findCellById = (value: Value, id: string): Cell | null => {
+  if (!value || !value.rows) return null;
+  
+  for (const row of value.rows) {
+    for (const cell of row.cells) {
+      if (cell.id === id) {
+        return cell;
+      }
+      
+      // Check nested rows
+      if (cell.rows) {
+        for (const nestedRow of cell.rows) {
+          for (const nestedCell of nestedRow.cells) {
+            if (nestedCell.id === id) {
+              return nestedCell;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  return null;
 };
 
 /**
@@ -339,7 +413,7 @@ export const useFocusCellById = () => {
       }
       const parentCellId = editor
         .getNodeWithAncestors(id)
-        ?.ancestors?.find((node) => !isRow(node))?.id;
+        ?.ancestors?.find((node: Node) => !isRow(node))?.id;
 
       setDisplayRef(parentCellId);
       setFocus({
@@ -402,7 +476,7 @@ export const useInsertNew = (parentCellId?: string) => {
   const updateValue = useUpdateValue();
   const cellPlugins = useAllCellPluginsForNode(parentCellId);
   const editor = useEditorStore();
-  const lang = useLang();
+  const lang = useLang() as string;
   const setFocus = useSetFocus();
   
   return useCallback(

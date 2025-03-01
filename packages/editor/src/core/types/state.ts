@@ -1,7 +1,7 @@
 import type { NodeWithAncestors, ValueWithHistory } from './node';
 import type { Display } from './display';
-import type { Focus } from '../reducer/focus';
-import type { Hover } from '../reducer/hover';
+import type { Focus } from './focus';
+import type { Hover } from './hover'; 
 
 export type RootState = {
   reactPage: {

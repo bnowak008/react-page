@@ -2,6 +2,8 @@ import { useContext, useMemo } from 'react';
 import { useStore } from 'zustand';
 import { EditorContext } from './EditorStore';
 import type { RootState, ZustandStore } from './store';
+import { setAllSizesAndOptimize } from './helpers/setAllSizesAndOptimize';
+import { optimizeCell, optimizeRow } from './helpers/optimize';
 
 // Hook to access the EditorStore
 export const useEditorStore = () => {
@@ -86,4 +88,40 @@ export const useSetFocus = () => {
 export const useSetHover = () => {
   const { setHover } = useActions();
   return setHover;
+};
+
+// Hook to optimize value
+export const useValueOptimizer = () => {
+  return useMemo(() => {
+    return {
+      optimizeValue: (value: any) => {
+        if (!value) return null;
+        
+        // Apply optimizations in a more efficient sequence
+        // This ensures we're not doing unnecessary work
+        return {
+          ...value,
+          rows: setAllSizesAndOptimize(value.rows || []),
+        };
+      },
+      // Expose individual optimization functions for more granular control
+      optimizeCell,
+      optimizeRow,
+      setAllSizesAndOptimize,
+      
+      // Add a new function to optimize a value without triggering a full update
+      // This is useful for optimizing values before they're passed to updateValue
+      optimizeValueInPlace: (value: any) => {
+        if (!value) return null;
+        
+        // Only optimize the rows without creating a new value object
+        // This is more efficient for in-place optimizations
+        if (value.rows) {
+          value.rows = setAllSizesAndOptimize(value.rows);
+        }
+        
+        return value;
+      }
+    };
+  }, []);
 }; 

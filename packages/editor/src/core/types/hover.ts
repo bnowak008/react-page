@@ -1,6 +1,11 @@
-import type { InsertOptions } from '../actions/cell';
+import type { InsertOptions } from './cell';
 import type { HoverTarget } from '../service/hover/computeHover';
 import type { PartialCell } from './node';
+
+export type Hover = {
+  target: HoverTarget | null;
+  insertActions: HoverInsertActions | null;
+};
 
 export type Room = {
   height: number;

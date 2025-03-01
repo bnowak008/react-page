@@ -15,7 +15,7 @@ export type Languages = Array<{
 }>;
 
 export interface CoreEditorProps {
-  store?: StoreApi<ZustandStore> | null;
+  store?: StoreApi<ZustandStore> | any | null;
   initialState: RootState;
 }
 
@@ -23,7 +23,9 @@ class EditorStore {
   store: StoreApi<ZustandStore>;
 
   constructor({ store, initialState }: CoreEditorProps) {
-    this.store = store || createZustandStore(initialState);
+    // Check if the store is a Zustand store by looking for setState method
+    const isZustandStore = store && typeof store.setState === 'function';
+    this.store = isZustandStore ? store : createZustandStore(initialState);
   }
 
   public setLang(lang: string) {
@@ -31,7 +33,7 @@ class EditorStore {
   }
 
   public getNodeWithAncestors = (nodeId: string) => {
-    // We need to adapt this to work with Zustand
+    // Use the selector to find the node in the state
     const state = this.store.getState();
     return findNodeInState(state, nodeId);
   };

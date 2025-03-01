@@ -119,7 +119,7 @@ export const useRowProps = <T>(
 export const useNodeHoverPosition = (nodeId: string): PositionEnum | null => {
   return useSelector((state) =>
     state.reactPage.hover?.nodeId === nodeId
-      ? state.reactPage.hover?.position
+      ? (state.reactPage.hover?.position as unknown as PositionEnum)
       : null
   );
 };
@@ -249,7 +249,7 @@ export const useCellHasPlugin = (nodeId: string) => {
 export const useAllCellPluginsForNode = (
   parentNodeId: string | null = null
 ) => {
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
 
   const ancestors = useNodeProps(parentNodeId, (node, ancestors) => {
     return [node, ...ancestors].reverse().map((a) => {
@@ -319,7 +319,7 @@ export const useCellDataI18nRaw = (nodeId: string) => {
  * @returns the data object in the given language of the given cell
  */
 export const useCellData = (nodeId: string, lang?: string) => {
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
   const theLang = lang ?? currentLang;
 
   return useCellProps(nodeId, (c) => getCellData(c, theLang) ?? {});
@@ -340,7 +340,7 @@ export const useCellInnerDivStylingProps = (
 } => {
   const plugin = usePluginOfCell(nodeId);
 
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
   const theLang = lang ?? currentLang;
 
   return (
@@ -367,7 +367,7 @@ export const useDebouncedCellData = (nodeId: string) => {
   const currentPartialDataRef = useRef<{
     [lang: string]: Record<string, unknown>;
   }>();
-  const currentLang = useLang();
+  const currentLang = useLang() as string;
 
   const currentData = useMemo(() => {
     return {
@@ -389,7 +389,7 @@ export const useDebouncedCellData = (nodeId: string) => {
       partialData: Record<string, unknown>,
       options?: CellPluginOnChangeOptions
     ) => {
-      const lang = options?.lang ?? currentLang;
+      const lang = (options?.lang ?? currentLang) as string;
       // if one debounced callback exists for the same language, cancel it
       if (updateHandles.current?.[lang]?.timeoutHandle)
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
