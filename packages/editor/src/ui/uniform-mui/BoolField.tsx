@@ -39,7 +39,7 @@ function Bool(props: BoolFieldProps) {
     transform,
     value,
   } = props;
-  const SelectionControl =
+  const _selectionControl =
     appearance === 'checkbox' || appearance === undefined ? Checkbox : Switch;
 
   return wrapField(

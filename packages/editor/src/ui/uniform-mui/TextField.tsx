@@ -1,10 +1,10 @@
-import type { TextFieldProps as MUITextFieldProps } from '@mui/material/TextField';
+import type { TextFieldProps as muiTextFieldProps } from '@mui/material/TextField';
 import TextField from '@mui/material/TextField';
 import React from 'react';
 import type { FieldProps } from 'uniforms';
 import { connectField, filterDOMProps } from 'uniforms';
 
-export type TextFieldProps = FieldProps<string, MUITextFieldProps>;
+export type TextFieldProps = FieldProps<string, muiTextFieldProps>;
 
 function Text({
   disabled,

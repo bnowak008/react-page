@@ -48,7 +48,7 @@ const theState = initialState(
 describe('useDebouncedCellData', () => {
   it("updates don't overwrite each other", (done) => {
     const store = createStore(theState);
-    const Component: React.FC<unknown> = () => {
+    const _component: React.FC<unknown> = () => {
       const [, setData] = useDebouncedCellData('cell0');
       React.useEffect(() => {
         setData({ a: 1 }, {});
@@ -119,7 +119,7 @@ describe('useDebouncedCellData', () => {
   */
   it('returns a referentially stable callback', (done) => {
     const store = createStore(theState);
-    const Component: React.FC<unknown> = () => {
+    const _component: React.FC<unknown> = () => {
       const [, setData] = useDebouncedCellData('cell0');
 
       const ref = React.useRef(setData);

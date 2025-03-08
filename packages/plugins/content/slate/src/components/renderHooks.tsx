@@ -147,7 +147,7 @@ export const useRenderLeave = (
       children,
     }: RenderLeafProps) => {
       // we reduce number of dom elements by avoiding having another span. Its required in edit mode though for slate to work
-      const Wrapper = readOnly ? React.Fragment : 'span';
+      const wrapper = readOnly ? React.Fragment : 'span';
       return (
         <Wrapper {...attributes}>
           {Object.keys(leaveTypes).reduce((el, type) => {
@@ -155,14 +155,14 @@ export const useRenderLeave = (
               (plugin) => plugin.type === type
             );
             if (matchingPlugin) {
-              const { Component, getStyle } = matchingPlugin;
+              const { component, getStyle } = matchingPlugin;
               const dataRaw = leaveTypes[type as keyof typeof leaveTypes]; // usually boolean
               const data = isObject(dataRaw) ? dataRaw : {};
 
               const style = getStyle ? getStyle(data) : undefined;
               if (
-                typeof Component === 'string' ||
-                Component instanceof String
+                typeof component === 'string' ||
+                component instanceof String
               ) {
                 const nativePropsInData = pickNativeProps(data as Data);
                 return (

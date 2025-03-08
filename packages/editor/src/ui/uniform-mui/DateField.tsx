@@ -6,12 +6,12 @@ import { connectField, filterDOMProps } from 'uniforms';
 
 /* istanbul ignore next */
 const DateConstructor = (typeof global === 'object' ? global : window).Date;
-const dateFormat = (value?: Date) => value && value.toISOString().slice(0, -8);
+const dateFormat = (value?: Date) => value?.toISOString().slice(0, -8);
 const dateParse = (timestamp: number, onChange: DateFieldProps['onChange']) => {
   const date = new DateConstructor(timestamp);
   if (date.getFullYear() < 10000) {
     onChange(date);
-  } else if (isNaN(timestamp)) {
+  } else if (Number.isNaN(timestamp)) {
     onChange(undefined);
   }
 };
@@ -27,7 +27,7 @@ function Date({
   error,
   errorMessage,
   helperText,
-  InputLabelProps,
+  inputLabelProps,
   inputRef,
   label,
   labelProps,
@@ -46,7 +46,7 @@ function Date({
       fullWidth
       helperText={(error && showInlineError && errorMessage) || helperText}
       label={label}
-      InputLabelProps={{ shrink: true, ...labelProps, ...InputLabelProps }}
+      InputLabelProps={{ shrink: true, ...labelProps, ...inputLabelProps }}
       inputProps={{ readOnly, ...props.inputProps }}
       margin="dense"
       name={name}

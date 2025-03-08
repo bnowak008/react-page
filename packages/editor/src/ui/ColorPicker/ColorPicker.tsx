@@ -18,18 +18,17 @@ class ColorPicker extends React.Component<ColorPickerProps> {
     isColorPickerVisible: false,
   };
 
-  handleClickShowColorPicker = (e: React.MouseEvent<HTMLElement>) => {
+  handleClickShowColorPicker = (_e: React.MouseEvent<HTMLElement>) => {
     if (this.props?.onDialogOpen) {
       this.props.onDialogOpen();
     }
     this.setState({ isColorPickerVisible: !this.state.isColorPickerVisible });
   };
 
-  onChange: ColorChangeHandler = (e) =>
-    this.props.onChange && this.props.onChange(e.rgb);
+  onChange: ColorChangeHandler = (e) => this.props.onChange?.(e.rgb);
 
   handleChangeComplete: ColorChangeHandler = (e) =>
-    this.props.onChangeComplete && this.props.onChangeComplete(e.rgb);
+    this.props.onChangeComplete?.(e.rgb);
 
   render() {
     return (

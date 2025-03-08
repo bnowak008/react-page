@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useOption, useUiTranslator } from '../../core/components/hooks';
 import ToggleEdit from './ToggleEdit/index';
 import ToggleInsert from './ToggleInsert/index';
@@ -82,7 +82,8 @@ export const Sidebar: React.FC<{
     previewEnabled
       ? { action: <TogglePreview label={t(defaultLabels.preview) ?? ''} /> }
       : null,
-    ...(customOptions?.map((CustomOption) => ({ action: <CustomOption /> })) ?? []),
+    ...(customOptions?.map((_customOption) => ({ action: <CustomOption /> })) ??
+      []),
   ].filter(notEmpty);
   return (
     <div
@@ -114,7 +115,7 @@ export const Sidebar: React.FC<{
             key={index}
             className="react-page-controls-mode-toggle-control"
             style={{
-              animationDelay: (actions.length - index) * 150 + 'ms',
+              animationDelay: `${(actions.length - index) * 150}ms`,
             }}
           >
             <>

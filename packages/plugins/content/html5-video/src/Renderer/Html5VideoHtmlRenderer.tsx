@@ -1,5 +1,5 @@
 import type { CellPluginComponentProps } from '@react-page/editor';
-import React from 'react';
+import type React from 'react';
 import { defaultHtml5VideoState } from '../default/state';
 import type { Html5VideoState } from '../types/state';
 

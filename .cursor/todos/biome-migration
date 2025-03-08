@@ -1,0 +1,152 @@
+# Migration Plan: ESLint + Prettier → Biome
+Created: ${new Date().toISOString()}
+
+## Current Setup Analysis
+- Using ESLint with TypeScript support (@typescript-eslint)
+- React-specific linting (eslint-plugin-react)
+- Prettier for formatting
+- Project uses TypeScript, React, and has multiple packages (monorepo)
+- Current formatting preferences:
+  - Semi: true
+  - Single quotes: true
+  - Trailing comma: es5
+  - End of line: auto
+
+## Migration Checklist
+
+### 1. Dependencies Cleanup
+- [ ] Remove ESLint dependencies:
+  - [ ] `eslint`
+  - [ ] `@typescript-eslint/eslint-plugin`
+  - [ ] `@typescript-eslint/parser`
+  - [ ] `eslint-config-prettier`
+  - [ ] `eslint-plugin-prettier`
+  - [ ] `eslint-plugin-react`
+- [ ] Remove Prettier:
+  - [ ] `prettier`
+- [ ] Remove configuration files:
+  - [ ] `.eslintrc.js`
+  - [ ] `.eslintignore`
+  - [ ] `.prettierrc`
+
+### 2. Install Biome
+- [ ] Add `@biomejs/biome` as dev dependency
+- [ ] Run initial setup: `npx @biomejs/biome init`
+
+### 3. Configure Biome
+- [ ] Create `biome.json` with project settings:
+  ```json
+  {
+    "$schema": "https://biomejs.dev/schemas/1.5.3/schema.json",
+    "organizeImports": {
+      "enabled": true
+    },
+    "linter": {
+      "enabled": true,
+      "rules": {
+        "recommended": true,
+        "suspicious": {
+          "noExplicitAny": "off"
+        },
+        "style": {
+          "useConsistentCasing": "error"
+        }
+      }
+    },
+    "formatter": {
+      "enabled": true,
+      "formatWithErrors": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineWidth": 80,
+      "lineEnding": "lf",
+      "ignore": []
+    },
+    "javascript": {
+      "formatter": {
+        "quoteStyle": "single",
+        "trailingComma": "es5",
+        "semicolons": "always"
+      }
+    }
+  }
+  ```
+
+### 4. Update Package Scripts
+- [ ] Remove old scripts:
+  - [ ] `"lint": "eslint -c .eslintrc.js '*/**/*.{js,ts,tsx}'"`
+  - [ ] `"lint:fix": "eslint -c .eslintrc.js '*/**/*.{js,ts,tsx}' --fix"`
+- [ ] Add new scripts:
+  - [ ] `"lint": "biome check ."`
+  - [ ] `"lint:fix": "biome check --apply ."`
+  - [ ] `"format": "biome format ."`
+  - [ ] `"format:fix": "biome format --write ."`
+
+### 5. CI/CD Updates
+- [ ] Update GitHub Actions workflows
+- [ ] Add `biome.json` to version control
+- [ ] Update pre-commit hooks if present
+
+### 6. Migration Testing Process
+- [ ] Select pilot package for initial migration
+- [ ] Run Biome on pilot package
+- [ ] Compare results with current ESLint/Prettier output
+- [ ] Document and address any rule conflicts
+- [ ] Create rule adjustment plan if needed
+- [ ] Roll out to remaining packages:
+  - [ ] editor
+  - [ ] content plugins
+  - [ ] layout plugins
+  - [ ] react-admin
+  - [ ] examples
+
+### 7. Documentation Updates
+- [ ] Update `CONTRIBUTING.md`
+  - [ ] Add new linting instructions
+  - [ ] Add new formatting instructions
+- [ ] Document project-specific Biome rules
+- [ ] Add troubleshooting guide for common issues
+
+### 8. Workspace Configuration
+- [ ] Review monorepo package needs
+- [ ] Set up package-specific configurations if needed
+- [ ] Ensure consistent formatting across packages
+- [ ] Test Biome performance in monorepo context
+
+### 9. Editor Integration
+- [ ] Add VSCode Biome extension
+- [ ] Update workspace settings:
+  ```json
+  {
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.formatOnSave": true
+  }
+  ```
+- [ ] Document editor setup for contributors
+
+### 10. Performance Monitoring
+- [ ] Benchmark before migration:
+  - [ ] Build times
+  - [ ] Lint times
+  - [ ] CI pipeline duration
+- [ ] Benchmark after migration
+- [ ] Document performance changes
+- [ ] Address any performance regressions
+
+## Notes
+- Biome is significantly faster than ESLint + Prettier
+- Some ESLint rules might not have direct equivalents in Biome
+- Consider keeping ESLint temporarily for rules not yet supported by Biome
+- Monitor Biome's React-specific linting capabilities as they evolve
+
+## Resources
+- [Biome Documentation](https://biomejs.dev/)
+- [Biome vs ESLint Migration Guide](https://biomejs.dev/guides/migrate-from-eslint)
+- [Biome Rules Reference](https://biomejs.dev/linter/rules)
+
+## Progress Tracking
+- [ ] Phase 1: Setup and Configuration (Steps 1-4)
+- [ ] Phase 2: Infrastructure Updates (Step 5)
+- [ ] Phase 3: Testing and Rollout (Steps 6-8)
+- [ ] Phase 4: Developer Experience (Step 9)
+- [ ] Phase 5: Monitoring and Optimization (Step 10) 

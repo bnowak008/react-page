@@ -20,9 +20,9 @@ function useIsServer() {
 const loadable = <T extends ComponentType<any>>(
   factory: () => Promise<{ default: T }>
 ) => {
-  const Component = lazyWithPreload(factory);
+  const component = lazyWithPreload(factory);
 
-  const LoadableComponent = React.forwardRef(
+  const loadableComponent = React.forwardRef(
     (
       {
         fallback = null,
@@ -40,7 +40,7 @@ const loadable = <T extends ComponentType<any>>(
         return fallback ?? null;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const Inner = Component as any;
+      const _inner = component as any;
 
       return (
         <Suspense fallback={fallback}>
@@ -50,13 +50,13 @@ const loadable = <T extends ComponentType<any>>(
     }
   );
 
-  const LoadableComponentWithPreload: typeof LoadableComponent & {
+  const loadableComponentWithPreload: typeof loadableComponent & {
     load: () => Promise<unknown>;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = LoadableComponent as any;
-  LoadableComponentWithPreload.load = Component.preload;
+  } = loadableComponent as any;
+  loadableComponentWithPreload.load = component.preload;
 
-  return LoadableComponentWithPreload;
+  return loadableComponentWithPreload;
 };
 
 export default loadable;

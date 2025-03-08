@@ -3,9 +3,9 @@ import { findSiblingRow } from './findSiblingRow';
 
 describe('findSiblingRow', () => {
   it('returns previous row for a given cell in a simple case', () => {
-    const THE_NODE_ID = '1';
+    const theNodeId = '1';
     const me: Cell = {
-      id: THE_NODE_ID,
+      id: theNodeId,
     };
 
     const parentRow: Row = {
@@ -47,9 +47,9 @@ describe('findSiblingRow', () => {
   });
 
   it('returns previous row for a given row in a simple case', () => {
-    const THE_NODE_ID = '1';
+    const theNodeId = '1';
     const me: Row = {
-      id: THE_NODE_ID,
+      id: theNodeId,
       cells: [],
     };
 
@@ -94,9 +94,9 @@ describe('findSiblingRow', () => {
   });
 
   it('returns previous row for a given cell in a case where parentRow has no previous row, but an other ancestor has', () => {
-    const THE_NODE_ID = '1';
+    const theNodeId = '1';
     const me: Cell = {
-      id: THE_NODE_ID,
+      id: theNodeId,
     };
 
     const parentRow: Row = {
@@ -152,9 +152,9 @@ describe('findSiblingRow', () => {
   });
 
   it('returns the innermost previous row', () => {
-    const THE_NODE_ID = '1';
+    const theNodeId = '1';
     const me: Cell = {
-      id: THE_NODE_ID,
+      id: theNodeId,
     };
 
     const prePreviousRow = {

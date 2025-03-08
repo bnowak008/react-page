@@ -26,7 +26,7 @@ export const useDragHandle = (nodeId: string, enabled = true) => {
       isDragging: monitor.isDragging(),
     }),
 
-    end(item, monitor) {
+    end(_item, monitor) {
       if (monitor.didDrop()) {
         // If the item drop occurred deeper down the tree, don't do anything
         return;

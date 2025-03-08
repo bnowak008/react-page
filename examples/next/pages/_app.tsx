@@ -24,7 +24,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const clientSideEmotionCache = createEmotionCache();
 const theme = createTheme();
 function MyApp({
-  Component,
+  component,
   pageProps,
   emotionCache = clientSideEmotionCache,
 }: AppProps & { emotionCache: EmotionCache }) {

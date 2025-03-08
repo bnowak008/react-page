@@ -8,7 +8,7 @@ export type Hover = {
 } | null;
 
 export const hover = (
-  state: Hover = null,
+  state: Hover,
   action: CellHoverAction | ClearHoverAction
 ): Hover => {
   switch (action.type) {

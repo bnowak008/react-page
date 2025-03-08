@@ -93,22 +93,18 @@ const Cell: React.FC<Props> = ({ nodeId, measureRef }) => {
     <div
       style={cellOuterStlye}
       ref={ref}
-      className={
-        getCellOuterDivClassName({
-          hasChildren,
-          hasInlineNeighbour,
-          size,
-          inline,
-        }) +
-        ' ' +
-        classNames({
-          'react-page-cell-has-plugin': hasPlugin,
-          'react-page-cell-focused': focused,
-          'react-page-cell-is-draft': isDraftInLang,
-          'react-page-cell-bring-to-front':
-            !isResizeMode && !isLayoutMode && inline, // inline must not be active for resize/layout
-        })
-      }
+      className={`${getCellOuterDivClassName({
+        hasChildren,
+        hasInlineNeighbour,
+        size,
+        inline,
+      })} ${classNames({
+        'react-page-cell-has-plugin': hasPlugin,
+        'react-page-cell-focused': focused,
+        'react-page-cell-is-draft': isDraftInLang,
+        'react-page-cell-bring-to-front':
+          !isResizeMode && !isLayoutMode && inline, // inline must not be active for resize/layout
+      })}`}
       onClick={onClick}
     >
       <Handle nodeId={nodeId} />

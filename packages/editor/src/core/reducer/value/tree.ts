@@ -51,12 +51,11 @@ const cell = (s: Cell, a: CellAction, depth: number): Cell =>
                   [action.lang]: action.isDraft,
                 },
               };
-            } else {
-              return {
-                ...reduced,
-                isDraft: action.isDraft,
-              };
             }
+            return {
+              ...reduced,
+              isDraft: action.isDraft,
+            };
           }
           return reduce();
         case CELL_UPDATE_DATA:
@@ -161,11 +160,7 @@ const createEmptyCell = (): Cell => ({
     },
   ],
 });
-export const cells = (
-  state: Cell[] = [],
-  action: AnyAction,
-  depth = 0
-): Cell[] => {
+export const cells = (state: Cell[], action: AnyAction, depth = 0): Cell[] => {
   let newCells =
     depth === 0 && state.length === 0 ? [createEmptyCell()] : state;
 
@@ -313,7 +308,7 @@ const row = (s: Row, a: AnyAction, depth: number): Row =>
     })(s, a)
   );
 
-export const rows = (s: Row[] = [], a: AnyAction, depth = 0): Row[] =>
+export const rows = (s: Row[], a: AnyAction, depth = 0): Row[] =>
   optimizeRows(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
 

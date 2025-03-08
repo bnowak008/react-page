@@ -10,10 +10,7 @@ import {
 import type { Display } from '../../types/display';
 
 export const display = (
-  state: Display = {
-    mode: DEFAULT_DISPLAY_MODE,
-    zoom: 1,
-  },
+  state: Display,
   action: DisplayAction | BlurAllCellsAction
 ) => {
   switch (action.type) {

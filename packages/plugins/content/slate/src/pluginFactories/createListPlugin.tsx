@@ -63,8 +63,8 @@ function createSlatePlugins<T, CT>(
           );
         } else {
           // change type
-          const { Transforms } = await import('slate');
-          Transforms.setNodes(
+          const { transforms } = await import('slate');
+          transforms.setNodes(
             editor,
             {
               type: def.type,
@@ -111,15 +111,13 @@ function createListPlugin<T = {}>(defRaw: ListDef) {
       type: LI,
     },
   };
-  const inner = function <TIn, TOut>(
+  const inner = <TIn, TOut>(
     innerdef: ListDef,
     customizersIn?: ListCustomizers<TIn, TOut>
-  ) {
-    const customizablePlugin = function <CT>(
+  ) => {
+    const customizablePlugin = <CT>(
       customizers: ListCustomizers<TOut, CT>
-    ) {
-      return inner(innerdef, mergeCustomizer(customizersIn, customizers));
-    };
+    ) => inner(innerdef, mergeCustomizer(customizersIn, customizers));
     customizablePlugin.toPlugin = (): SlatePlugin[] =>
       createSlatePlugins<TIn, TOut>(innerdef, customizersIn).map((plugin) =>
         plugin.toPlugin()

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { MoveLeft, MoveRight, MoveDown, MoveUp } from '../moveButtons';
 const MoveActions: React.FC<{ nodeId: string }> = ({ nodeId }) => {
   return (

@@ -82,7 +82,7 @@ export const createCell = (
   const { cellPlugins, lang } = options;
   const pluginId =
     partialCell.plugin &&
-    (typeof partialCell.plugin == 'string'
+    (typeof partialCell.plugin === 'string'
       ? partialCell.plugin
       : partialCell.plugin.id);
   const plugin = pluginId ? cellPlugins.find((p) => p.id === pluginId) : null;

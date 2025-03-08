@@ -1,6 +1,6 @@
 import type { CellPluginComponentProps } from '@react-page/editor';
 
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import { Resizable } from 'react-resizable';
 

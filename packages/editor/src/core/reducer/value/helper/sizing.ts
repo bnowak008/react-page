@@ -53,7 +53,7 @@ export const computeInlines = (cells: Array<Cell> = []): Array<Cell> => {
  * Resize cells.
  */
 export const resizeCells = (
-  cells: Array<Cell> = [],
+  cells: Array<Cell>,
   { id, size }: Pick<Cell, 'id' | 'size'>
 ): Array<Cell> => {
   let prev = 0;
@@ -62,7 +62,8 @@ export const resizeCells = (
       const ret = { ...c, size: (c.size ?? 0) + prev - (size ?? 0) };
       prev = 0;
       return ret;
-    } else if (id === c.id) {
+    }
+    if (id === c.id) {
       if (!c.inline) {
         prev = c.size ?? 0;
       }

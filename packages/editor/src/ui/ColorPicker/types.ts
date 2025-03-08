@@ -1,4 +1,4 @@
-import { ColorResult } from 'react-color';
+import type { ColorResult } from 'react-color';
 
 export interface ColorPickerProps {
   color?: string;

@@ -83,7 +83,7 @@ export const useCellProps = <T>(
  * @returns full Cell object
  */
 export const useCell = (nodeId: string) => {
-  return useNodeProps(nodeId, (node, ancestors) =>
+  return useNodeProps(nodeId, (node, _ancestors) =>
     !isRow(node) ? node : null
   );
 };

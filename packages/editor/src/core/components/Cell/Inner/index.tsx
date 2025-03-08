@@ -40,7 +40,7 @@ const Inner: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
   const data = useCellData(nodeId);
   const pluginCellSpacing = getPluginCellSpacing(plugin, data);
-  const [Provider, providerValue] = useCellSpacingProvider(pluginCellSpacing);
+  const [_provider, providerValue] = useCellSpacingProvider(pluginCellSpacing);
   let cellSpacingY = 0;
   if (typeof pluginCellSpacing !== 'undefined' && pluginCellSpacing != null) {
     cellSpacingY = normalizeCellSpacing(pluginCellSpacing)?.y ?? 0;
@@ -80,7 +80,7 @@ const Inner: React.FC<{ nodeId: string }> = ({ nodeId }) => {
 
   const components = useOption('components');
 
-  const InsertNewWithDefault = components?.InsertNew ?? InsertNew;
+  const _insertNewWithDefault = components?.InsertNew ?? InsertNew;
 
   if (!cellShouldHavePlugin) {
     return <Droppable nodeId={nodeId}>{children}</Droppable>;

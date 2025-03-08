@@ -19,7 +19,7 @@ import { UPDATE_VALUE } from '../../actions/value';
 import { value } from '../value';
 
 export const values = undoable(value, {
-  filter: function filterState(action, currentState, previousHistory) {
+  filter: function filterState(action, _currentState, _previousHistory) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((action as any)?.notUndoable) {
       return false;

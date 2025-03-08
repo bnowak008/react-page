@@ -78,7 +78,7 @@ function Select(props: SelectFieldProps) {
     } = props;
 
     const appearance = props.appearance ?? 'checkbox';
-    const SelectionControl = appearance === 'checkbox' ? Checkbox : Switch;
+    const _selectionControl = appearance === 'checkbox' ? Checkbox : Switch;
     const filteredProps = omit(filterDOMProps(props), [
       'checkboxes' as never,
       'disableItem' as never,
@@ -97,7 +97,7 @@ function Select(props: SelectFieldProps) {
           ref={inputRef}
           value={value ?? ''}
         >
-          {allowedValues!.map((item) => (
+          {allowedValues?.map((item) => (
             <FormControlLabel
               control={
                 <Radio id={`${id}-${escape(item)}`} {...filteredProps} />
@@ -111,7 +111,7 @@ function Select(props: SelectFieldProps) {
         </RadioGroup>
       ) : (
         <FormGroup id={id}>
-          {allowedValues!.map((item) => (
+          {allowedValues?.map((item) => (
             <FormControlLabel
               control={
                 <SelectionControl
@@ -151,7 +151,7 @@ function Select(props: SelectFieldProps) {
     fullWidth = true,
     helperText,
     id,
-    InputLabelProps,
+    inputLabelProps,
     inputProps,
     label,
     labelProps,
@@ -168,7 +168,7 @@ function Select(props: SelectFieldProps) {
     textFieldProps,
   } = props;
 
-  const Item = native ? 'option' : MenuItem;
+  const _item = native ? 'option' : MenuItem;
   const hasPlaceholder = !!placeholder;
   const hasValue = value !== '' && value !== undefined;
   const filteredProps = omit(filterDOMProps(props), [
@@ -190,7 +190,7 @@ function Select(props: SelectFieldProps) {
       InputLabelProps={{
         shrink: !!label && (hasPlaceholder || hasValue),
         ...labelProps,
-        ...InputLabelProps,
+        ...inputLabelProps,
       }}
       label={label}
       margin={margin}
@@ -218,7 +218,7 @@ function Select(props: SelectFieldProps) {
         </Item>
       )}
 
-      {allowedValues!.map((value) => (
+      {allowedValues?.map((value) => (
         <Item disabled={props.disableItem?.(value)} key={value} value={value}>
           {transform ? transform(value) : value}
         </Item>

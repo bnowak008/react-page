@@ -1,9 +1,7 @@
 import { SET_LANG } from '../../actions/setting';
 
 export const settings = (
-  state = {
-    lang: null,
-  },
+  state,
   action: {
     type: string;
 

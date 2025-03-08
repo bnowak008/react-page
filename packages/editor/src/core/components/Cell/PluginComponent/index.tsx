@@ -22,7 +22,7 @@ const PluginComponent: FC<
 > = ({ nodeId, children, hasChildren }) => {
   const lang = useLang();
   const components = useOption('components');
-  const CustomPluginMissing = components?.CellPluginMissing;
+  const customPluginMissing = components?.CellPluginMissing;
   const isPreviewMode = useIsPreviewMode();
   const isEditMode = useIsEditMode();
 
@@ -32,12 +32,12 @@ const PluginComponent: FC<
   const focused = useIsExclusivlyFocused(nodeId);
   const hasInlineNeighbour = useCellProps(nodeId, (c) => c?.hasInlineNeighbour);
 
-  const Renderer = plugin?.Renderer;
-  const Missing = CustomPluginMissing ?? PluginMissing;
-  const Provider = plugin?.Provider ?? NoopProvider;
+  const renderer = plugin?.Renderer;
+  const _missing = customPluginMissing ?? PluginMissing;
+  const _provider = plugin?.Provider ?? NoopProvider;
   const remove = useRemoveCell(nodeId);
 
-  const Toolbar = components?.BottomToolbar ?? BottomToolbar;
+  const _toolbar = components?.BottomToolbar ?? BottomToolbar;
 
   const componentProps = useMemo<CellPluginComponentProps>(
     () => ({
@@ -94,7 +94,7 @@ const PluginComponent: FC<
                 : undefined,
           }}
         >
-          {Renderer ? (
+          {renderer ? (
             <Renderer {...componentProps}>{children}</Renderer>
           ) : pluginId ? (
             <Missing {...componentProps} pluginId={pluginId} />

@@ -44,7 +44,7 @@ describe('mapNode', () => {
       }),
       mapRow: (r) => ({
         ...r,
-        id: 'mapped-' + r.id,
+        id: `mapped-${r.id}`,
       }),
     });
 

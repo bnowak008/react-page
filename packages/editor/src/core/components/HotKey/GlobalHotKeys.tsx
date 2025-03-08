@@ -172,7 +172,7 @@ const GlobalHotKeys: React.FC<{ focusRef: RefObject<HTMLDivElement> }> = ({
                 : null;
               insertAfter(node, insertAfterNodeId);
             }
-          } catch (e) {
+          } catch (_e) {
             // ignore
           }
         },

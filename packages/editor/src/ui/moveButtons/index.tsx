@@ -1,6 +1,6 @@
 import { Fab } from '@mui/material';
 import type { CSSProperties } from 'react';
-import React from 'react';
+import type React from 'react';
 
 import IconUp from '@mui/icons-material/ArrowDropUp';
 import IconDown from '@mui/icons-material/ArrowDropDown';

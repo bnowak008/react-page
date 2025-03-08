@@ -18,10 +18,9 @@ export const normalizeCellSpacing = (
   }
   if (['number', 'string'].indexOf(typeof cellSpacing) !== -1) {
     return { x: +cellSpacing || 0, y: +cellSpacing || 0 };
-  } else {
-    return {
-      x: +(cellSpacing as CellSpacing).x || 0,
-      y: +(cellSpacing as CellSpacing).y || 0,
-    };
   }
+  return {
+    x: +(cellSpacing as CellSpacing).x || 0,
+    y: +(cellSpacing as CellSpacing).y || 0,
+  };
 };

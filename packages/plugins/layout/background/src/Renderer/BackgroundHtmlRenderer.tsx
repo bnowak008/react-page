@@ -1,6 +1,6 @@
 import { colorToString } from '@react-page/editor';
 import type { FC, PropsWithChildren } from 'react';
-import React from 'react';
+import type React from 'react';
 import { ModeEnum } from '../types/ModeEnum';
 import type { BackgroundRendererProps } from '../types/renderer';
 

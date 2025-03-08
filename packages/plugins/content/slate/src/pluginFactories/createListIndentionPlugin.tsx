@@ -61,11 +61,8 @@ const ceateSlatePlugin = (def: Definition): SlatePlugin[] => {
 };
 
 function createListIndentionPlugin(def: Definition) {
-  const customizablePlugin = function (
-    customize: (def2: Definition) => Definition
-  ) {
-    return createListIndentionPlugin(customize(def));
-  };
+  const customizablePlugin = (customize: (def2: Definition) => Definition) =>
+    createListIndentionPlugin(customize(def));
   customizablePlugin.toPlugin = (): SlatePlugin[] => ceateSlatePlugin(def);
   return customizablePlugin;
 }

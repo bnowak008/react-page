@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 const DividerHtmlRenderer: React.FC = () => {
   return <hr className="react-page-plugins-content-divider" />;

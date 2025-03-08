@@ -51,9 +51,9 @@ const InsertNew: React.FC<InsertNewProps> = ({ parentCellId }) => {
   return (
     <div
       ref={dropRef}
-      className={
-        'react-page-cell-insert-new' + (isOver && isAllowed ? ' hover' : '')
-      }
+      className={`react-page-cell-insert-new${
+        isOver && isAllowed ? ' hover' : ''
+      }`}
       style={{
         pointerEvents: 'all',
         zIndex: isLayoutMode ? 10 : 1,
@@ -76,7 +76,7 @@ const InsertNew: React.FC<InsertNewProps> = ({ parentCellId }) => {
           viewBox="0 0 24 24"
           data-testid="AddIcon"
         >
-          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
         </svg>
       </div>
     </div>

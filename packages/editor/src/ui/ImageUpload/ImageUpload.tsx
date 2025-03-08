@@ -41,7 +41,7 @@ class ImageUpload extends React.Component<
     const patternPart = this.props.allowedExtensions
       ? this.props.allowedExtensions.map((a) => a.toLowerCase()).join('|')
       : '';
-    const pattern = '(' + patternPart.replace(/\./g, '\\.') + ')$';
+    const pattern = `(${patternPart.replace(/\./g, '\\.')})$`;
     return new RegExp(pattern, 'i').test(fileName.toLowerCase());
   };
 
@@ -95,21 +95,21 @@ class ImageUpload extends React.Component<
         .imageUpload(file, this.handleReportProgress)
         .then((resp) => {
           this.setState({ progress: undefined, isUploading: false });
-          this.props.imageUploaded && this.props.imageUploaded(resp);
+          this.props.imageUploaded?.(resp);
         })
         .catch((error) => {
           this.setState({ isUploading: false });
-          this.props.imageUploadError && this.props.imageUploadError(error);
+          this.props.imageUploadError?.(error);
         });
     }
   };
 
   readFile(file: File): Promise<ImageLoaded> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       const reader = new FileReader();
 
       // Read the image via FileReader API and save image result in state.
-      reader.onload = function (e: ProgressEvent) {
+      reader.onload = (e: ProgressEvent) => {
         // Add the file name to the data URL
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let dataUrl: string = (e.target as any).result;

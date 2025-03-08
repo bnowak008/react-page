@@ -19,7 +19,7 @@ describe('migrate', () => {
         migrate: (d) => {
           return {
             foonew: d.foo,
-            barNew: d.bar.map((s) => d.foo + '' + s),
+            barNew: d.bar.map((s) => `${d.foo}${s}`),
           };
         },
       }),
@@ -78,7 +78,7 @@ describe('migrate', () => {
         migrate: (d) => {
           return {
             foonew: d.foo,
-            barNew: d.bar.map((s) => d.foo + '' + s),
+            barNew: d.bar.map((s) => `${d.foo}${s}`),
           };
         },
       }),
@@ -149,7 +149,7 @@ describe('migrate', () => {
         migrate: (d) => {
           return {
             foonew: d.foo,
-            barNew: d.bar?.map((s) => d.foo + '' + s),
+            barNew: d.bar?.map((s) => `${d.foo}${s}`),
           };
         },
       }),

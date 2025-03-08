@@ -28,7 +28,7 @@ const Draggable: FC<PropsWithChildren<Props>> = ({
   const allowMoveInEditMode = useOption('allowMoveInEditMode');
   const components = useOption('components');
 
-  const ResizeHandle = components?.EditModeResizeHandle ?? DefaultSmallHandle;
+  const _resizeHandle = components?.EditModeResizeHandle ?? DefaultSmallHandle;
 
   return (
     <>
@@ -59,7 +59,7 @@ const Draggable: FC<PropsWithChildren<Props>> = ({
                 cell?.inline,
               'react-page-cell-draggable-leaf': isLeaf,
             })}
-          ></div>
+          />
         ) : allowMoveInEditMode ? (
           <div ref={dragRef}>
             <ResizeHandle onClick={focus} />

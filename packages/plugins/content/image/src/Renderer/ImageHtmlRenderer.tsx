@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import { iconStyle } from './../common/styles';
 import type { CellPluginComponentProps } from '@react-page/editor';

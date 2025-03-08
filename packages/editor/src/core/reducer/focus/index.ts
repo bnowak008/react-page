@@ -22,7 +22,7 @@ const stateWithout = (state: Focus, idsToRemove: string[]) => {
   };
 };
 export const focus = (
-  state: Focus = null,
+  state: Focus,
   action:
     | FocusCellAction
     | BlurCellAction

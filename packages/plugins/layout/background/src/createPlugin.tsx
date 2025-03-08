@@ -11,8 +11,8 @@ const Icon = lazyLoad(() => import('@mui/icons-material/CropLandscape'));
 
 const createPlugin = (settings: BackgroundSettings) => {
   const mergedSettings = { ...defaultSettings, ...settings };
-  const Controls = mergedSettings.Controls;
-  const Renderer = mergedSettings.Renderer;
+  const controls = mergedSettings.Controls;
+  const renderer = mergedSettings.Renderer;
 
   const plugin: CellPlugin<BackgroundState> = {
     controls: {

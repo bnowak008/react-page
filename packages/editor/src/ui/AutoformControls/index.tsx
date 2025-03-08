@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useMemo } from 'react';
-import type JSONSchemaBridge from 'uniforms-bridge-json-schema';
+import type jsonSchemaBridge from 'uniforms-bridge-json-schema';
 import { useIsSmallScreen } from '../../core/components/hooks';
 import lazyLoad from '../../core/helper/lazyLoad';
 
@@ -15,22 +15,23 @@ export const AutoForm = lazyLoad(() => import('./AutoForm'));
 export const AutoField = lazyLoad(() => import('./AutoField'));
 export const AutoFields = lazyLoad(() => import('./AutoFields'));
 
-const getDefaultValue = function (bridge: JSONSchemaBridge): {
+const getDefaultValue = (
+  bridge: jsonSchemaBridge
+): {
   [key: string]: unknown;
-} {
-  return bridge.getSubfields().reduce(
+} =>
+  bridge.getSubfields().reduce(
     (acc, fieldName) => ({
       ...acc,
       [fieldName]: bridge.getInitialValue(fieldName),
     }),
     {}
   );
-};
 
 type Props<T extends DataTType> = CellPluginComponentProps<T> &
   AutoformControlsDef<T>;
 export function AutoformControls<T extends DataTType>(props: Props<T>) {
-  const { onChange, data, schema, columnCount = 2, Content } = props;
+  const { onChange, data, schema, columnCount = 2, content } = props;
   const bridge = useMemo(
     () => makeUniformsSchema<T>(schema as JsonSchema<T>),
     [schema]
@@ -52,7 +53,7 @@ export function AutoformControls<T extends DataTType>(props: Props<T>) {
       schema={bridge}
       onSubmit={onChange}
     >
-      {Content ? (
+      {content ? (
         <Content {...props} columnCount={columnCount} />
       ) : (
         <div

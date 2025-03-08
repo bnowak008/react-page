@@ -53,7 +53,7 @@ type CellOld = NodeBase & {
 };
 
 let index = 1;
-const mockCreateId = () => 'nodeId_' + index++;
+const mockCreateId = () => `nodeId_${index++}`;
 
 // Mock the createId function using Bun's test mocking
 import { mock } from 'bun:test';

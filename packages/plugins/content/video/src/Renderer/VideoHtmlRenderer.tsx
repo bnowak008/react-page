@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import PlayArrow from '@mui/icons-material/PlayArrow';
 import { iconStyle } from '../common/styles';
 

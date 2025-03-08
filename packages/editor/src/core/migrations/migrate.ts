@@ -13,7 +13,7 @@ export const migrate = <TOut>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dataIn: any,
   migrations: Migration[] | undefined,
-  versionIn: MigrationVersion = 0,
+  versionIn: MigrationVersion,
   context: MigrationContext
 ): TOut => {
   //console.log('----------');

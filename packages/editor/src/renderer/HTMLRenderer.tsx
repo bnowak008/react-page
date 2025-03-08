@@ -26,7 +26,7 @@ import {
 const rowHasInlineChildren = ({ cells }: { cells: Cell[] }) =>
   Boolean(cells.length === 2 && Boolean(cells[0].inline));
 
-const HTMLRow: React.FC<
+const _htmlRow: React.FC<
   Partial<Row> & {
     lang: string;
     className?: string;
@@ -59,7 +59,7 @@ const noop = () => {
   return;
 };
 
-const HTMLCell: React.FC<
+const _htmlCell: React.FC<
   Cell & {
     lang?: string;
     cellPlugins: CellPluginList;
@@ -85,9 +85,9 @@ const HTMLCell: React.FC<
   });
 
   if (plugin) {
-    const { Renderer } = plugin;
+    const { renderer } = plugin;
 
-    const Provider =
+    const _provider =
       plugin.Provider && !plugin.disableProviderInReadOnly
         ? plugin.Provider
         : NoopProvider;
@@ -164,7 +164,8 @@ const HTMLCell: React.FC<
         </div>
       </Provider>
     );
-  } else if ((cell.rows?.length ?? 0) > 0) {
+  }
+  if ((cell.rows?.length ?? 0) > 0) {
     return (
       <div
         className={outerClasses}

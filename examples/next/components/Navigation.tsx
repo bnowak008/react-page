@@ -4,7 +4,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 
 import Link from 'next/link';
-import React from 'react';
+import type React from 'react';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { ListItemIcon } from '@mui/material';
 import { GitHub } from '@mui/icons-material';

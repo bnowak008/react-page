@@ -47,6 +47,6 @@ class EditorStore<T extends RootState = RootState> {
 }
 
 export const createEmptyState: () => Value = () =>
-  ({ id: createId(), rows: [], version: CURRENT_EDITABLE_VERSION } as Value);
+  ({ id: createId(), rows: [], version: CURRENT_EDITABLE_VERSION }) as Value;
 
 export default EditorStore;

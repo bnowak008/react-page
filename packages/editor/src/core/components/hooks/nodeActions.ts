@@ -137,7 +137,7 @@ export const useDuplicateCellById = () => {
 
   return useCallback(
     (id: string) => {
-      const node = editor && editor.getNode(id);
+      const node = editor?.getNode(id);
       if (node) dispatch(duplicateCell(node));
     },
     [editor, dispatch]
@@ -318,7 +318,7 @@ export const useTrashDrop = () => {
     collect: (monitor) => ({
       isHovering: monitor.isOver({ shallow: true }),
     }),
-    drop: (item, monitor) => {
+    drop: (item, _monitor) => {
       if (item.cell) {
         removeCell(item.cell.id);
       }

@@ -1,8 +1,7 @@
 import type { RootState } from '../types/state';
 import { findNodeInState } from './editable';
 
-export const focus = (state: RootState) =>
-  state && state.reactPage && state.reactPage.focus;
+export const focus = (state: RootState) => state?.reactPage?.focus;
 
 export const allFocusedNodeIds = (state: RootState) => {
   return (

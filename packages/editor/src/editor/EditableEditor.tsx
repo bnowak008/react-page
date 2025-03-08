@@ -7,7 +7,7 @@ import { createEmptyState } from '../core/EditorStore';
 import type { ProviderProps } from '../core/Provider';
 import Provider from '../core/Provider';
 import type { ValueWithLegacy } from '../core/types';
-import EditorUI from '../ui/EditorUI';
+import editorUi from '../ui/EditorUI';
 import StickyWrapper from './StickyWrapper';
 
 export type DndBackend = BackendFactory;

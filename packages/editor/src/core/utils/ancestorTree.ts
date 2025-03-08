@@ -48,9 +48,8 @@ export const getCommonAncestorTree = (
     mapCell: (c) => {
       if (c.rows?.length) {
         return c;
-      } else {
-        return null;
       }
+      return null;
     },
     // remove empty cells from rows and remove row completly if its empty
     mapRowDown: (r) => {
@@ -73,9 +72,8 @@ export const getCommonAncestorTree = (
       };
       if (cell.rows?.length > 0 || cellIds.includes(cell.id)) {
         return cell;
-      } else {
-        return null;
       }
+      return null;
     },
   });
   return cleaned;

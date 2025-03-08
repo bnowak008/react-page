@@ -1,7 +1,7 @@
 import { FormControlLabel, Switch, Tooltip } from '@mui/material';
 import VisibleIcon from '@mui/icons-material/Visibility';
 import NonVisibleIcon from '@mui/icons-material/VisibilityOff';
-import React from 'react';
+import type React from 'react';
 import {
   useCellProps,
   useLang,
@@ -25,7 +25,7 @@ const DraftSwitch = ({ nodeId, lang }: { nodeId: string; lang?: string }) => {
   const isDraft = cell?.isDraftI18n?.[theLang] ?? cell?.isDraft; // fallback to legacy
   const title = t(isDraft ? 'Content is hidden' : 'Content is visible');
   return cell ? (
-    <Tooltip title={title + (hasI18n ? ' in ' + theLang : '')}>
+    <Tooltip title={title + (hasI18n ? ` in ${theLang}` : '')}>
       <FormControlLabel
         style={{ marginRight: 5 }}
         labelPlacement="start"

@@ -49,7 +49,7 @@ function Num({
       onChange={(event) => {
         const parse = decimal ? parseFloat : parseInt;
         const value = parse(event.target.value);
-        onChange(isNaN(value) ? undefined : value);
+        onChange(Number.isNaN(value) ? undefined : value);
       }}
       placeholder={placeholder}
       ref={inputRef}

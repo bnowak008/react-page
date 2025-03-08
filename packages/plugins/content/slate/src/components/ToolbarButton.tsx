@@ -33,12 +33,12 @@ const ToolbarButton: React.FC<{
                 color: theme.palette.primary.main,
               }
             : disabled
-            ? { color: theme.palette.action.disabled }
-            : {
-                color: dark
-                  ? theme.palette.common.white
-                  : theme.palette.common.black,
-              }),
+              ? { color: theme.palette.action.disabled }
+              : {
+                  color: dark
+                    ? theme.palette.common.white
+                    : theme.palette.common.black,
+                }),
         }}
         disabled={disabled}
       >

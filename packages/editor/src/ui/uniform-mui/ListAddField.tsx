@@ -40,7 +40,7 @@ function ListAdd({
   >(parentName, { initialCount }, { absoluteName: true })[0];
 
   const limitNotReached =
-    !disabled && !(parent.maxCount! <= parent.value!.length);
+    !disabled && !(parent.maxCount! <= parent.value?.length);
 
   return (
     <FormControl fullWidth={fullWidth} margin={margin} variant={variant}>
@@ -51,7 +51,7 @@ function ListAdd({
         disabled={!limitNotReached}
         onClick={() => {
           if (!readOnly) {
-            parent.onChange(parent.value!.concat([cloneDeep(value)]));
+            parent.onChange(parent.value?.concat([cloneDeep(value)]));
           }
         }}
       >

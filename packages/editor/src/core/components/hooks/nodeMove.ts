@@ -177,7 +177,7 @@ const searchAncestorRows = (
       const found = find(parentRow, greatParentCell);
       if (found) return found;
     }
-    if (breakIf && breakIf(parentRow, greatParentCell)) {
+    if (breakIf?.(parentRow, greatParentCell)) {
       return null;
     }
   }

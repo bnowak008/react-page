@@ -12,7 +12,7 @@ function createValidator<T extends DataTType>(schema: JsonSchema<T>) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (model: any) => {
     validator(model);
-    if (validator.errors && validator.errors.length) {
+    if (validator.errors?.length) {
       return validator.errors?.length ? { details: validator.errors } : null;
     }
   };

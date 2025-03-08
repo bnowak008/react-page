@@ -2,9 +2,7 @@ import { isEmpty } from './empty';
 import type { Row, Cell } from '../../../types/node';
 import { removeUndefinedProps } from '../../../utils/removeUndefinedProps';
 
-export const flatten = function <T>(c: Array<T>, n: Array<T>): Array<T> {
-  return [...c, ...n];
-};
+export const flatten = <T>(c: Array<T>, n: Array<T>): Array<T> => [...c, ...n];
 
 export const optimizeCells = (cells: Array<Cell> = []): Array<Cell> =>
   cells.filter((c) => !isEmpty(c));

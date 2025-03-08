@@ -73,7 +73,7 @@ type CreateSlateData<TPlugins> = (
   custom?: CreateDataCustomizer<TPlugins>
 ) => SlateState;
 export type SlateCellPlugin<
-  TPlugins extends SlatePluginCollection = DefaultPlugins
+  TPlugins extends SlatePluginCollection = DefaultPlugins,
 > = CellPlugin<SlateState, Omit<SlateState, 'selection'>> & {
   createData: CreateSlateData<TPlugins>;
   createDataFromHtml: (html: string) => Promise<SlateState>;

@@ -43,12 +43,12 @@ function List({
         }
         {...filterDOMProps(props)}
       >
-        {value?.map((item, itemIndex) =>
+        {value?.map((_item, itemIndex) =>
           Children.map(children, (child, childIndex) =>
             isValidElement(child)
               ? cloneElement(child, {
                   key: `${itemIndex}-${childIndex}`,
-                  name: child.props.name?.replace('$', '' + itemIndex),
+                  name: child.props.name?.replace('$', `${itemIndex}`),
                   ...itemProps,
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } as any)

@@ -1,6 +1,6 @@
-import { createPluginConfig } from "../build.config";
+import { createPluginConfig } from '../build.config';
 
 export default createPluginConfig({
-  name: "plugin-template",
-  entry: "./src/index.ts",
-}); 
+  name: 'plugin-template',
+  entry: './src/index.ts',
+});

@@ -77,7 +77,7 @@ export const useCellDrop = (nodeId: string) => {
       }
       onHover(hoverTarget, monitor, ref.current, hoverActions, cellPlugins);
     },
-    drop: (item, monitor) => {
+    drop: (_item, monitor) => {
       if (!hoverTarget || !ref.current) {
         return;
       }

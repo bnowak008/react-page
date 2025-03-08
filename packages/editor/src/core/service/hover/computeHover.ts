@@ -395,8 +395,8 @@ const getDropLevel = (hover: HoverTarget) =>
  */
 export const CALLBACK_LIST: CallbackList = {
   [c.NO]: (
-    item: PartialCell,
-    hover: HoverTarget,
+    _item: PartialCell,
+    _hover: HoverTarget,
     { clear }: HoverInsertActions
   ) => clear(),
 

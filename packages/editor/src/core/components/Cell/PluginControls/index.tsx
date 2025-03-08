@@ -32,7 +32,7 @@ const ControlsList: React.FC<{
           backgroundColor: (theme) => theme.palette.background.default,
         }}
         value={tab}
-        onChange={(e, v) => setTab(v)}
+        onChange={(_e, v) => setTab(v)}
         orientation="vertical"
         variant="scrollable"
       >
@@ -72,7 +72,7 @@ const Controls: React.FC<{
   }
 
   if (controls?.type === 'custom') {
-    const { Component } = controls;
+    const { component } = controls;
     pluginControls = <Component {...componentProps} {...controls} />;
   } else if (controls?.type === 'autoform') {
     pluginControls = <AutoformControls {...componentProps} {...controls} />;

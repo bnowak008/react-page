@@ -25,7 +25,8 @@ export const sanitizeVersion = (version?: MigrationVersion) => {
       .map(Number);
 
     return major + minor * 0.01 + patch * 0.01 * 0.01;
-  } else return version;
+  }
+  return version;
 };
 
 /**

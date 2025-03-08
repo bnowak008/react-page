@@ -32,21 +32,20 @@ export const mapNode = (node: Node, mapper: Mapper, depth = 0): Node | null => {
     return mapper.mapRowDown
       ? mapper.mapRowDown(fullMapped, depth)
       : fullMapped;
-  } else {
-    if (mapper.skipMapCell?.(node, depth)) return node;
-    const mappedNode = mapper.mapCell ? mapper.mapCell(node, depth) : node;
-    const mappedChildren = mappedNode?.rows?.map(
-      (c) => mapNode(c, mapper, depth + 1) as Row
-    );
-    const fullMapped: Cell | null =
-      (mappedChildren?.length ?? 0) > 0
-        ? ({
-            ...mappedNode,
-            rows: mappedChildren,
-          } as Cell)
-        : mappedNode;
-    return mapper.mapCellDown
-      ? mapper.mapCellDown(fullMapped, depth)
-      : fullMapped;
   }
+  if (mapper.skipMapCell?.(node, depth)) return node;
+  const mappedNode = mapper.mapCell ? mapper.mapCell(node, depth) : node;
+  const mappedChildren = mappedNode?.rows?.map(
+    (c) => mapNode(c, mapper, depth + 1) as Row
+  );
+  const fullMapped: Cell | null =
+    (mappedChildren?.length ?? 0) > 0
+      ? ({
+          ...mappedNode,
+          rows: mappedChildren,
+        } as Cell)
+      : mappedNode;
+  return mapper.mapCellDown
+    ? mapper.mapCellDown(fullMapped, depth)
+    : fullMapped;
 };

@@ -19,13 +19,13 @@ export const getCurrentNodeWithPlugin = <T extends DataTType>(
         ? (elem: any) => Boolean(elem[plugin.type])
         : (elem: any) => elem.type === plugin.type
       : plugin.pluginType === 'data'
-      ? // search for data
-        ({ data }: any) => {
-          const matches = plugin.dataMatches(data as T);
+        ? // search for data
+          ({ data }: any) => {
+            const matches = plugin.dataMatches(data as T);
 
-          return matches;
-        }
-      : null;
+            return matches;
+          }
+        : null;
   if (!match) {
     return null;
   }

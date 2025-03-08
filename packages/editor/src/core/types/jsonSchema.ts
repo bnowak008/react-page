@@ -124,7 +124,7 @@ type BaseObjectProps<FieldData extends Record<string, unknown>, FullData> = {
 
 type ObjectProperty<
   FieldData extends Record<string, unknown>,
-  FullData
+  FullData,
 > = BaseObjectProps<FieldData, FullData> & CommonPropertyProps<FullData>;
 type ArrayProperty<Field, Data> = {
   /**
@@ -139,13 +139,13 @@ type ArrayProperty<Field, Data> = {
 export type JsonSchemaProperty<Field, Data> = Field extends (infer U)[]
   ? ArrayProperty<U, Data>
   : Field extends Record<string, unknown>
-  ? ObjectProperty<Field, Data>
-  : Field extends string
-  ? StringProperty<Data>
-  : Field extends number
-  ? NumberProperty<Data>
-  : Field extends boolean
-  ? BooleanType<Data>
-  : never;
+    ? ObjectProperty<Field, Data>
+    : Field extends string
+      ? StringProperty<Data>
+      : Field extends number
+        ? NumberProperty<Data>
+        : Field extends boolean
+          ? BooleanType<Data>
+          : never;
 
 export type JsonSchema<Data extends DataTType> = BaseObjectProps<Data, Data>;

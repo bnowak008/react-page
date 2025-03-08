@@ -1,5 +1,6 @@
 import type { FC, MouseEvent } from 'react';
-import React, { useCallback, useState } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
 
 import type { Element } from 'slate';
 import { Transforms } from 'slate';

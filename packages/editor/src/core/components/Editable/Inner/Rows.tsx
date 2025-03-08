@@ -16,7 +16,7 @@ const Rows: React.FC = () => {
     ? childConstraints?.maxChildren > rowIds.length
     : true;
 
-  const InsertNewWithDefault = components?.InsertNew ?? InsertNew;
+  const _insertNewWithDefault = components?.InsertNew ?? InsertNew;
 
   return (
     <>

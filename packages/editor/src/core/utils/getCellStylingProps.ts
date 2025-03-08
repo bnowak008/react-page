@@ -24,11 +24,9 @@ export const getCellInnerDivClassName = (
       : plugin?.cellClassName
     : undefined;
 
-  return (
-    'react-page-cell-inner' +
-    ((cell?.rows?.length ?? 0) > 0 ? '' : ' react-page-cell-inner-leaf') +
-    (additionalClass ? ' ' + additionalClass : '')
-  );
+  return `react-page-cell-inner${
+    (cell?.rows?.length ?? 0) > 0 ? '' : ' react-page-cell-inner-leaf'
+  }${additionalClass ? ` ${additionalClass}` : ''}`;
 };
 
 export const getCellInnerDivStylingProps = (

@@ -149,7 +149,7 @@ export type PluginHandler = (
 
 export type CellPlugin<
   DataT extends DataTType = DataTAny,
-  DataSerializedT = DataT
+  DataSerializedT = DataT,
 > = {
   /**
    * the plugins unique id. Only one plugin with the same id may be used

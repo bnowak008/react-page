@@ -23,7 +23,7 @@ export default (markDef: MarkPluginDefinition) => {
       tagName: markDef.tagName,
     },
     Component: ({ children, attributes }) => {
-      const Tag =
+      const tag =
         markDef.tagName as unknown as ComponentType<PropsWithChildren>;
       return <Tag {...attributes}>{children}</Tag>;
     },

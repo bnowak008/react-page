@@ -6,7 +6,7 @@ import type { ImageState } from './types/state';
 
 const createPlugin = (settings?: ImageSettings): CellPlugin<ImageState> => {
   const mergedSettings = { ...defaultSettings, ...settings };
-  const Controls = mergedSettings.Controls;
+  const controls = mergedSettings.Controls;
   return {
     controls: {
       type: 'custom',

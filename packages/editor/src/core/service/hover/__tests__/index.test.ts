@@ -23,7 +23,7 @@ const cases: Case[] = [
       mouse: { x: 0, y: 50 },
     },
     actions: (done: () => void) => ({
-      leftOf: (item, hover, options) => {
+      leftOf: (item, _hover, options) => {
         expect(options.level, 'to be', 10);
         expect(item.id, 'to be', 'foo');
         done();
@@ -37,7 +37,7 @@ const cases: Case[] = [
       mouse: { x: 99, y: 50 },
     },
     actions: (done) => ({
-      rightOf: (item, hover, options) => {
+      rightOf: (item, _hover, options) => {
         expect(options.level, 'to be', 9);
         expect(item.id, 'to be', 'foo');
         done();
@@ -51,7 +51,7 @@ const cases: Case[] = [
       mouse: { x: 95, y: 50 },
     },
     actions: (done) => ({
-      rightOf: (item, hover, options) => {
+      rightOf: (_item, _hover, options) => {
         expect(options.level, 'to be', 5);
         done();
       },
@@ -64,7 +64,7 @@ const cases: Case[] = [
       mouse: { x: 92, y: 50 },
     },
     actions: (done) => ({
-      rightOf: (item, hover, options) => {
+      rightOf: (_item, _hover, options) => {
         expect(options.level, 'to be', 2);
         done();
       },
@@ -77,7 +77,7 @@ const cases: Case[] = [
       mouse: { x: 89, y: 50 },
     },
     actions: (done) => ({
-      rightOf: (item, hover, options) => {
+      rightOf: (_item, _hover, options) => {
         expect(options.level, 'to be', 0);
         done();
       },
@@ -90,7 +90,7 @@ const cases: Case[] = [
       mouse: { x: 98, y: 95 },
     },
     actions: (done) => ({
-      rightOf: (item, hover, options) => {
+      rightOf: (_item, _hover, options) => {
         expect(options.level, 'to be', 0);
         done();
       },

@@ -63,7 +63,7 @@ const ResizableRowCell: React.FC<Props> = ({
             y: 0,
           }}
           axis="x"
-          onDrag={(e, data) => {
+          onDrag={(_e, data) => {
             const diff = Math.round(data.deltaX / stepWidth);
             const newSize =
               rowHasInlineChildrenPosition === 'right'
@@ -82,7 +82,7 @@ const ResizableRowCell: React.FC<Props> = ({
                 cellSpacingY !== 0 ? `${cellSpacingY / 2}px 0` : undefined,
             }}
             onClick={(e) => e.stopPropagation()}
-          ></div>
+          />
         </Draggable>
       ) : null}
     </>

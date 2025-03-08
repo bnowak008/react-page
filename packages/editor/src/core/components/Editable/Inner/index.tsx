@@ -15,10 +15,10 @@ const Inner: React.FC = () => {
   const offsetPercent = zoomTransformOriginY / (rect?.height ?? 0);
 
   const backdropPercent = 50 * (1 - zoom);
-  const left = backdropPercent + '%';
-  const right = 100 - backdropPercent + '%';
-  const top = backdropPercent * offsetPercent * 2 + '%';
-  const bottom = 100 - backdropPercent * (1 - offsetPercent) * 2 + '%';
+  const left = `${backdropPercent}%`;
+  const right = `${100 - backdropPercent}%`;
+  const top = `${backdropPercent * offsetPercent * 2}%`;
+  const bottom = `${100 - backdropPercent * (1 - offsetPercent) * 2}%`;
   return (
     <div
       ref={ref}
@@ -39,7 +39,7 @@ const Inner: React.FC = () => {
 
           background: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16  ' viewBox='0 0 8 8'%3E%3Cg fill='%23c5c5c5' fill-opacity='0.4'%3E%3Cpath fill-rule='evenodd' d='M0 0h4v4H0V0zm4 4h4v4H4V4z'/%3E%3C/g%3E%3C/svg%3E")`,
         }}
-      ></div>
+      />
 
       <div
         style={{
@@ -47,7 +47,7 @@ const Inner: React.FC = () => {
           transform: `scale(${zoom})`,
           transition: '0.6s',
         }}
-        className={'react-page-editable react-page-editable-mode-' + mode}
+        className={`react-page-editable react-page-editable-mode-${mode}`}
       >
         <Rows />
       </div>

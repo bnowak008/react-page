@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import { useIsEditMode, useRemoveCell, useUiTranslator } from '../../hooks';
 
 const ErrorCell: React.FC<{

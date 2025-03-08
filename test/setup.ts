@@ -1,7 +1,7 @@
-import { afterEach, beforeEach, expect, jest, test } from "bun:test";
-import { cleanup } from "@testing-library/react";
-import * as matchers from "@testing-library/jest-dom/matchers";
-import { Window } from "happy-dom";
+import { afterEach, beforeEach, expect, jest, test } from 'bun:test';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+import { Window } from 'happy-dom';
 
 // Setup happy-dom
 const window = new Window();
@@ -61,4 +61,4 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   mockRegistry.clear();
-}); 
+});

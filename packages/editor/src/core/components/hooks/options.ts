@@ -92,7 +92,6 @@ export const useCellSpacingProvider = (
   );
   if (typeof cellSpacing === 'undefined' || cellSpacing == null) {
     return [NoopProvider, value];
-  } else {
-    return [RenderOptionsContext.Provider, value];
   }
+  return [RenderOptionsContext.Provider, value];
 };

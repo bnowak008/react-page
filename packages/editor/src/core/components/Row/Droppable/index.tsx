@@ -10,7 +10,7 @@ const Droppable: FC<PropsWithChildren<{ nodeId: string }>> = ({
   const isLayoutMode = useIsLayoutMode();
   const isInsertMode = useIsInsertMode();
 
-  const [ref, isAllowed] = useCellDrop(nodeId);
+  const [ref, _isAllowed] = useCellDrop(nodeId);
   if (!(isLayoutMode || isInsertMode)) {
     return <div className="react-page-row-droppable-container">{children}</div>;
   }

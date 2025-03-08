@@ -46,15 +46,18 @@ export const onHover = throttle(
         actions.clear();
       }
       return;
-    } else if (!monitor.isOver({ shallow: true })) {
+    }
+    if (!monitor.isOver({ shallow: true })) {
       // If hovering over ancestor cell, do nothing (we are going to propagate later in the tree anyways)
       return;
-    } else if (drag.cell.id && target.ancestorIds?.includes(drag.cell.id)) {
+    }
+    if (drag.cell.id && target.ancestorIds?.includes(drag.cell.id)) {
       if (shouldClear(target.id, drag.cell.id)) {
         actions.clear();
       }
       return;
-    } else if (!target.id) {
+    }
+    if (!target.id) {
       // If hovering over something that isn't a cell or hasn't an id, do nothing. Should be an edge case
       logger.warn('Canceled cell drop, no id given.', target, drag);
       return;
@@ -87,15 +90,13 @@ export const onDrop = (
   if (monitor.didDrop() || !monitor.isOver({ shallow: true }) || !target) {
     // If the item drop occurred deeper down the tree, don't do anything
     return;
-  } else if (drag.cell.id === target.id) {
+  }
+  if (drag.cell.id === target.id) {
     // If the item being dropped on itself do nothing
     actions.cancelCellDrag();
     return;
-  } else if (
-    target &&
-    drag.cell.id &&
-    target.ancestorIds?.includes(drag.cell.id)
-  ) {
+  }
+  if (target && drag.cell.id && target.ancestorIds?.includes(drag.cell.id)) {
     // If hovering over a child of itself, don't propagate further
     actions.cancelCellDrag();
     return;
