@@ -1,4 +1,9 @@
 import type { ReactNode } from 'react';
+
+export type BottomToolbarToolsProps = {
+  nodeId: string;
+};
+
 export type BottomToolbarProps = {
   open?: boolean;
   style?: React.CSSProperties;
@@ -9,7 +14,3 @@ export type BottomToolbarProps = {
   pluginControls?: ReactNode;
   actionsLeft?: ReactNode;
 } & BottomToolbarToolsProps;
-
-export type BottomToolbarToolsProps = {
-  nodeId: string;
-};

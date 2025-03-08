@@ -1,9 +1,9 @@
-import { RGBColor } from 'react-color';
+import { ColorResult } from 'react-color';
 
 export interface ColorPickerProps {
-  onChange: (color: RGBColor) => void;
-  onChangeComplete: (color: RGBColor) => void;
-  color?: RGBColor | null;
+  color?: string;
+  onChange?: (color: ColorResult) => void;
+  onChangeComplete?: (color: ColorResult) => void;
   buttonContent?: JSX.Element | string;
   icon?: JSX.Element | string;
   onDialogOpen?: () => void;
@@ -13,5 +13,3 @@ export interface ColorPickerProps {
 export type ColorPickerState = {
   isColorPickerVisible: boolean;
 };
-
-export { RGBColor };

@@ -1,0 +1,139 @@
+# Project Rules
+
+## Context Files
+.cursor/context.md - Project context and documentation
+- Current project state
+- Architecture decisions
+- Technology stack details
+- Implementation status
+- Package relationships
+- Development workflow
+
+.cursor/todos/[{task_name}].md - Task management and tracking
+
+Each todo file should follow the format:
+```md
+# [Category] Todo List
+
+## Description
+Detailed description of this todo category's purpose, including:
+- ALWAYS USE CHECKBOXES
+- What types of tasks belong here
+- How tasks should be tracked
+- When and how to update this file
+- How this category relates to the project
+- Any specific guidelines or requirements
+- Any relevant context about the status of the tasks implementation
+- No pseudo code or implementations. Only detailed steps on how to acheive such things.
+
+## Memory Section Guidelines
+- ALWAYS maintain the Memory section in each todo file
+- UPDATE the Memory section when:
+  - Making significant implementation decisions
+  - Overcoming technical challenges
+  - Discovering future considerations
+  - Gaining new technical insights
+  - Adding or modifying dependencies
+- ENSURE the Memory section:
+  - Provides clear context for future development
+  - Documents rationale behind decisions
+  - Tracks evolution of implementation
+  - Records lessons learned
+  - Notes potential improvements
+- USE the Memory section to:
+  - Aid in knowledge transfer
+  - Support maintenance decisions
+  - Guide future enhancements
+  - Prevent repeated mistakes
+  - Maintain implementation context
+
+## Active
+- [ ] High priority tasks
+- [ ] Current sprint tasks
+- [ ] In-progress items
+
+## Pending
+- [ ] Upcoming tasks
+- [ ] Planned improvements
+- [ ] Future considerations
+
+## Completed
+- [x] Finished tasks (with completion date)
+- [x] Resolved items
+- [x] Implemented features
+```
+## Project Context Management
+- ALWAYS read and consider [context.md](mdc:.cursor/context.md) before making any changes
+- If the user references any .cursor/todos/*.md ALWAYS read and consider them before making changes
+- AUTOMATICALLY update [context.md](mdc:.cursor/context.md) when:
+  - New dependencies are added or removed
+  - Project structure changes
+  - Features are implemented or modified
+  - Architecture decisions are made
+  - Development status changes
+- AUTOMATICALLY update relevant todo files in .cursor/todos/ when:
+  - Tasks are completed or change status
+  - New tasks are identified
+  - Implementation status changes
+  - Technical debt is discovered
+- MAINTAIN separate todo files for different tasks:
+  - .cursor/todos/example.md - Example tasks
+  - .cursor/todos/new-feature.md - New feature tasks
+
+## Code Style & Standards
+1. TypeScript is the primary language used throughout the project
+2. ESLint and Prettier are used for code formatting and style enforcement
+3. Use consistent naming conventions:
+   - React components use PascalCase
+   - Functions and variables use camelCase
+   - Constants use UPPER_SNAKE_CASE
+4. JSDoc comments required for public Components, hooks and types
+5. Semantic versioning is enforced through commit message format
+
+## Git Workflow
+1. Commit messages must follow semantic convention:
+   - `feat(scope): description` for features (bumps minor version)
+   - `fix(scope): description` for bugfixes (bumps patch version)
+   - `BREAKING CHANGE: description` for breaking changes (bumps major version)
+2. Pull requests required for all changes
+3. At least one maintainer review required
+4. Clean commit history through rebasing before merging
+5. File issues before opening PRs for new features
+
+## Project Structure
+1. Monorepo architecture using Yarn workspaces
+2. Main packages:
+   - editor: Core editing functionality
+   - plugins/content/*: Content plugins
+   - plugins/layout/*: Layout plugins
+   - react-admin: Admin interface
+3. Examples directory contains NextJS demo implementations
+4. Documentation in /docs directory
+
+## Testing & Quality
+1. Jest used for testing
+2. Tests required for core functionality
+3. Run test suite in watch mode during development
+4. ESLint in watch mode during development
+5. Coverage reporting through Coveralls
+
+## Build Process
+1. TypeScript compilation to both CommonJS and ES modules
+2. PostCSS processing for styles
+3. Separate build processes for lib and examples
+4. Clean builds using rimraf
+5. Watch mode available for development
+
+## Dependencies
+1. React 16.14+ and React DOM required
+2. Material-UI (@mui) for UI components
+3. Redux for state management
+4. Yarn preferred but npm supported
+5. Node.js required for development
+
+## Plugin Development
+1. Plugins must implement CellPlugin interface
+2. Version number required for migration support
+3. Migrations required for data structure changes
+4. Provider optional for shared context
+5. JSDoc annotations required for public APIs

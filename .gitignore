@@ -1,15 +1,41 @@
-.idea
-.vscode
-logs
-*.log
-*.log.*
-node_modules/
-doc/
-_book/
-coverage/
+# Bun
+bun.lockb
+.bun/
+
+# Build outputs
+dist/
 lib/
 lib-es/
-dist/
-examples/build
 *.tsbuildinfo
-.DS_store
+# Dependencies
+node_modules/
+# Testing
+coverage/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+# OS
+.DS_Store
+Thumbs.db
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# Environment
+.env
+.env.local
+.env.*.local
+# Cache
+.cache/
+.npm/
+.yarn/
+# Temporary files
+*.tmp
+*.temp
+node_modules
+dist
+lib
+coverage

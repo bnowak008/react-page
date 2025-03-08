@@ -1,0 +1,71 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Build Packages
+        run: bun run build
+
+      - name: Get Previous Version
+        id: get_version
+        run: echo "::set-output name=version::$(node -p "require('./package.json').version")"
+
+      - name: Bump Version
+        id: bump_version
+        uses: phips28/gh-action-bump-version@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          minor-wording: 'feat,feature'
+          major-wording: 'BREAKING,major'
+          patch-wording: 'fix,patch'
+          rc-wording: 'alpha,beta,rc'
+
+      - name: Update Package Versions
+        run: |
+          NEW_VERSION=${{ steps.bump_version.outputs.newTag }}
+          echo "Updating to version ${NEW_VERSION}"
+          find packages -name "package.json" -type f -exec sed -i "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION#v}\"/" {} +
+
+      - name: Publish Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > .npmrc
+          for pkg in packages/*/; do
+            if [ -f "${pkg}package.json" ]; then
+              cd "${pkg}"
+              echo "Publishing ${pkg}..."
+              npm publish --access public
+              cd ../..
+            fi
+          done
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.bump_version.outputs.newTag }}
+          release_name: Release ${{ steps.bump_version.outputs.newTag }}
+          body: ${{ steps.bump_version.outputs.changelog }} 
